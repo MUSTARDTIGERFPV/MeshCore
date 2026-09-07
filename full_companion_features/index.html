@@ -1741,7 +1741,7 @@ editor does not necessarily forward them.</p>
 </tr>
 <tr>
 <td>ESP32 USB packet/debug logging</td>
-<td><code>set usb.logging on</code></td>
+<td>For 1.17.1.5: <code>powersaving off</code>, then <code>set usb.logging on</code></td>
 <td><code>set usb.logging off</code></td>
 <td>Immediately; saved; logging owns the USB terminal</td>
 </tr>
@@ -1781,6 +1781,15 @@ editor does not necessarily forward them.</p>
 <code>get usb.logging</code>, <code>get radio.rxps</code>, or <code>get webui</code>. Use <code>powersaving</code> to
 inspect device power saving. Fresh installations enable device power saving
 and leave USB logging off. Existing saved preferences take precedence.</p>
+<p>For an <strong>ESP32 1.17.1.5 USB logging session</strong>, use this sequence in the text
+terminal:</p>
+<pre><code class="language-text">powersaving off
+set usb.logging on
+</code></pre>
+<p>The power-saving step is the documented USB-session workaround for this
+release. It is saved separately; <code>set usb.logging off</code> does not restore power
+saving. nRF52 does not need the ESP32 workaround. WiFi-only MQTT logging does
+not need this USB step; see <a href="../role_feature_switches/">logging by role</a>.</p>
 <p>ESP32 logging and Binary Companion share one USB port. After turning logging
 off, return to Binary Companion with <code>+++MESHCORE-TERM-STOP</code>. nRF52 keeps its
 optional logging port separate from its primary USB port and BLE connection.

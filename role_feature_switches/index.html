@@ -1925,9 +1925,9 @@ Full Companion MQTT switches.</p>
 </tr>
 <tr>
 <td>ESP32 USB logging</td>
-<td><code>set usb.logging on</code></td>
+<td><code>powersaving off</code>, then <code>set usb.logging on</code></td>
 <td><code>set usb.logging off</code></td>
-<td><code>get usb.logging</code></td>
+<td><code>powersaving</code>, <code>get usb.logging</code></td>
 </tr>
 <tr>
 <td>nRF52 second USB logging port</td>
@@ -2021,9 +2021,9 @@ from some portable builds. The USB browser console still works without it.</p>
 <tbody>
 <tr>
 <td>Live USB logging</td>
-<td><code>set usb.logging on</code></td>
+<td>ESP32 1.17.1.5: <code>powersaving off</code>, then <code>set usb.logging on</code>; other platforms: <code>set usb.logging on</code></td>
 <td><code>set usb.logging off</code></td>
-<td><code>get usb.logging</code></td>
+<td><code>powersaving</code>, <code>get usb.logging</code></td>
 </tr>
 <tr>
 <td>Capture RX log to node storage</td>
@@ -2114,6 +2114,25 @@ from some portable builds. The USB browser console still works without it.</p>
 <p>Infrastructure <code>set usb.logging</code> has <strong>no <code>reboot</code> suffix</strong>, including nRF52.
 <code>log start/stop</code> records to storage independently of live USB logging. Use
 <code>log erase</code> to delete that capture.</p>
+<p>For <strong>ESP32 1.17.1.5 USB logging</strong>, run these as separate commands in the
+role's text terminal (or remote admin CLI on infrastructure):</p>
+<pre><code class="language-text">powersaving off
+set usb.logging on
+powersaving
+get usb.logging
+</code></pre>
+<p>Check for power saving <code>off</code> and USB logging <code>on</code>. This avoids the released
+ESP32 USB sleep bug, including the G3 report. Both settings are saved; turning
+logging off later does not automatically restore power saving. LoRa RXPS is
+independent. nRF52 logging does not need this ESP32 workaround.</p>
+<p>With the <a href="../releases/1.17.1.5/#g3-usb-disappearance-with-power-saving-enabled">G3 sleep correction</a>,
+enabled live USB logging keeps ESP32 USB serviced and blocks light sleep,
+including when a host closes the port or disconnects. CPU idle/yield remains
+available. <code>set usb.logging off</code> removes that blocker; an attached native USB
+host still prevents sleep. On Full infrastructure, <code>set logging.output usb</code>
+and <code>both</code> enable the same USB blocker; <code>wifi</code> and <code>off</code> remove it. File capture
+with <code>log start</code> is independent. The original 1.17.1.5 binaries require the
+<code>powersaving off</code> workaround described in the release note.</p>
 <h3 id="infrastructure-mqtt-and-logging-output">Infrastructure MQTT and logging output</h3>
 <p><strong>Search terms:</strong> MQTT settings, MQTT on, MQTT off, logging output, USB and WiFi logging.</p>
 <p>On unified Full infrastructure with both MQTT and USB logging compiled:</p>
@@ -2132,7 +2151,7 @@ from some portable builds. The USB browser console still works without it.</p>
 <td>Off</td>
 </tr>
 <tr>
-<td><code>set logging.output usb</code></td>
+<td><code>powersaving off</code>, then <code>set logging.output usb</code></td>
 <td>On</td>
 <td>Off</td>
 </tr>
@@ -2142,7 +2161,7 @@ from some portable builds. The USB browser console still works without it.</p>
 <td>On</td>
 </tr>
 <tr>
-<td><code>set logging.output both</code></td>
+<td><code>powersaving off</code>, then <code>set logging.output both</code></td>
 <td>On</td>
 <td>On</td>
 </tr>
@@ -2153,6 +2172,12 @@ select <code>both</code>; saved settings override this. To toggle only MQTT whil
 USB logging unchanged, use <code>set bridge.enabled off</code> / <code>on</code>. Neither setting
 turns LoRa repeating off. Repeater forwarding uses <code>set repeat off</code> / <code>on</code>
 and <code>get repeat</code> separately.</p>
+<p>The <code>powersaving off</code> step above is the <strong>1.17.1.5 ESP32 USB workaround</strong>.
+<strong>WiFi/MQTT-only logging does not need it while the Repeater/Room Server MQTT
+bridge is running:</strong> that sleep guard already exists in the released firmware.
+Use <code>get bridge.running</code> to check that the bridge is running; an enabled
+preference alone is not the running state. <code>set logging.output wifi</code> keeps
+USB logging off and uses that MQTT guard.</p>
 <p>For a custom broker on an MQTT-capable Repeater or Room Server:</p>
 <pre><code class="language-text">set wifi.ssid MyNetwork
 set wifi.pwd my-password

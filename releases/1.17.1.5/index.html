@@ -1501,6 +1501,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#g3-usb-disappearance-with-power-saving-enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G3 USB disappearance with power saving enabled
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firmware-roles-and-update-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware roles and update support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#build-using-option-3" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1576,6 +1598,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#g3-usb-disappearance-with-power-saving-enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G3 USB disappearance with power saving enabled
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firmware-roles-and-update-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware roles and update support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#build-using-option-3" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1643,11 +1687,68 @@ terminal on Full Companion and infrastructure images.</p>
 <code>v1.17.1.5-halo-keymind-cascade-dev-&lt;commit&gt;</code>, matching the 1.17.1.4 naming
 convention. Supplemental pages retain the <code>repeater-room-</code>, <code>utility-</code>,
 <code>logging-</code>, <code>lora-ota-</code>, and <code>full-profiles-</code> prefixes where those outputs
-exist. All pages are development prereleases.</p>
+exist. The Companion page is marked Latest; the supplemental pages remain
+development prereleases.</p>
 <p>This release uses the USA/Canada radio preset and Cascade runtime defaults.
 The release build records the resolved frequency, bandwidth, spreading factor,
 and coding rate. The offline USA Cascadia fallback is 910.525 MHz, BW62.5,
 SF7, CR5. Saved node settings survive ordinary firmware updates.</p>
+<h2 id="g3-usb-disappearance-with-power-saving-enabled">G3 USB disappearance with power saving enabled</h2>
+<p>The published <code>26303793</code> firmware has an ESP32 native-USB sleep bug that
+matches a Station G3 report: USB disappears from the connected Pi after a
+few minutes, the display button stops responding, but the repeater still
+answers over LoRa. Hardware confirmation of this report is pending.</p>
+<p>Cascade enables device power saving by default on fresh settings. After
+two minutes, the repeater can enter light sleep when no serial terminal is
+open, even though the Pi has enumerated the USB device. Light sleep stops
+USB service; the radio GPIO can still wake the CPU, while the G3 display
+button is only polled. Closing a terminal must not be treated as unplugging
+the USB host. Espressif documents the underlying
+<a href="https://docs.espressif.com/projects/esp-idf/en/v4.4.7/esp32s3/api-guides/usb-otg-console.html#limitations">native USB sleep limitation</a>.</p>
+<p>To enable <strong>USB logging on an ESP32 1.17.1.5 image with logging support</strong>,
+disable power saving first. Use the role's text terminal, or the repeater's
+remote admin CLI if USB has already disappeared:</p>
+<pre><code class="language-text">powersaving off
+set usb.logging on
+powersaving
+get usb.logging
+</code></pre>
+<p>The read-back commands should report power saving <code>off</code> and USB logging <code>on</code>.
+For an image without USB logging, use just <code>powersaving off</code> and <code>powersaving</code>
+to apply/check the sleep workaround. Disabling power saving saves the setting and takes
+effect immediately; it does not erase the node or change LoRa RX power
+saving (<code>radio.rxps</code>). If USB does not reappear after disabling sleep
+remotely, power-cycle once and check that the port and display button remain
+usable beyond the two-minute mark. Ordinary reflashing can retain the
+saved power-saving setting, so check it during comparisons with another
+firmware build too.</p>
+<p>On unified Full infrastructure, also run <code>powersaving off</code> before enabling
+USB through <code>set logging.output usb</code> or <code>set logging.output both</code>. These are
+separate commands. Turning logging off does not automatically restore the
+saved power-saving setting. nRF52 logging does not need this ESP32 workaround.</p>
+<p><strong>WiFi/MQTT-only logging does not need <code>powersaving off</code> while the
+Repeater/Room Server MQTT bridge is running.</strong> The original <code>26303793</code> code
+already prevents device sleep in that state. Select <code>set logging.output wifi</code>
+where supported and check <code>get bridge.running</code>; <code>get bridge.enabled</code> alone
+only checks the saved preference. Full Companion MQTT uses WebConfig instead
+of infrastructure <code>logging.output</code>/<code>bridge.*</code> commands.</p>
+<p>The source correction keeps native USB serviced while a host is enumerated,
+including when its terminal is closed. Enabled live USB logging also blocks
+ESP32 light sleep, even without a host. FreeRTOS can still idle/yield; this
+does not disable the saved power-saving setting or Companion CPU scaling.
+With logging off, USB power from a charger still permits sleep.</p>
+<p>The corrected G3 uses its user button as a light-sleep wake source alongside
+LoRa. Button activity keeps the CPU and display awake for at least two minutes;
+holding or pressing the button again extends the interval. The usual display
+timeout can keep the screen on longer. An intentional long-press power-off
+retains its existing action. After the wake interval, sleep is allowed when
+power saving is enabled, logging is off, no native USB host is attached, and
+no running bridge or pending work needs service.</p>
+<p>Host simulations cover both native USB modes, terminal close/reconnect,
+logging toggles, OTA inhibition, simultaneous button/LoRa wake configuration,
+and the two-minute interval across timer rollover. The published 1.17.1.5
+binaries have not been replaced by these corrections.</p>
+<h2 id="firmware-roles-and-update-support">Firmware roles and update support</h2>
 <p>Use the exact board's Full Companion image when available. Every Full
 Companion must pass linked-firmware checks for MOTA sending, its text terminal,
 and the platform's source transports. ESP32 supplies USB and WiFi sources;

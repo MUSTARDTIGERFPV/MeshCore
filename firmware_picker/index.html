@@ -2000,7 +2000,8 @@ SSD1306 Full Companion builds use <code>set display.rotation 90|180|270</code>; 
 restores the board default, so a separate rotated release image is not
 recommended.</p>
 <p>Ordinary non-OTA roles also use one artifact for normal operation and USB
-logging. Select the saved mode with <code>set usb.logging off|on</code>; no <code>-logging-</code>
+logging. On ESP32 1.17.1.5, run <code>powersaving off</code> before <code>set usb.logging on</code>.
+Select the saved mode with <code>set usb.logging off|on</code>; no <code>-logging-</code>
 artifact is emitted. KISS, BLE-only Companion, and constrained LoRa OTA
 repeater images retain their protocol/partition contracts and do not inherit
 plaintext USB logging.</p>
@@ -2008,8 +2009,12 @@ plaintext USB logging.</p>
 as an ASCII terminal and automatically hands a complete <code>&lt;</code> frame to Binary
 Companion. <code>set usb.logging on reboot</code> adds its plaintext interface <code>02</code>.</p>
 <p>Every ESP32 Full Companion instead exposes one USB TTY. Logging is off by
-default, so the TTY serves the ASCII/Binary Companion switcher. Use
-<code>set usb.logging on</code> to turn that same TTY into an input-capable plaintext
+default, so the TTY serves the ASCII/Binary Companion switcher. On 1.17.1.5,
+run these two text commands to enable USB logging:</p>
+<pre><code class="language-text">powersaving off
+set usb.logging on
+</code></pre>
+<p>The second command turns that same TTY into an input-capable plaintext
 CLI/logging stream; framed Binary Companion is unavailable on USB while
 logging owns it. <code>set usb.logging off</code> stops the logs and leaves the TTY in
 the normal ASCII terminal, matching a fresh Full installation. Send
@@ -2019,6 +2024,11 @@ while the USB TTY is logging. ESP32 Full builds use the repository's
 Arduino-ESP32 2.x base where the board supports it; RC32 and ESP32-C6 retain
 their board-required Arduino 3.x platform but still expose only one USB TTY.
 A second ESP32 CDC interface is not part of the release profile.</p>
+<p>The picker includes the power-saving workaround when selecting <strong>USB</strong> or
+<strong>USB + WiFi</strong> logging on ESP32 1.17.1.5. WiFi/MQTT-only logging does not need
+it while the Repeater/Room Server bridge is running; check <code>get bridge.running</code>.
+The workaround is not added to nRF52 directions. See <a href="../role_feature_switches/">logging by role</a>
+for the saved settings and the original firmware's USB sleep issue.</p>
 <h2 id="installation-methods">Installation methods</h2>
 <table>
 <thead>
