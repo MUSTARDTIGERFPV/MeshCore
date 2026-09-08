@@ -1672,6 +1672,16 @@ set bluetooth.name {name|default}
 advertisement identity. A custom name may contain spaces and is limited to 31
 valid UTF-8 bytes. <code>default</code> restores <code>MeshCore-&lt;node name&gt;</code>. The saved change
 takes effect after reboot. <code>get ble.name</code> and <code>set ble.name</code> are short aliases.</p>
+<pre><code>get bluetooth.mac
+set bluetooth.mac {address|random|random-every-boot|default}
+</code></pre>
+<p>Shows or changes the Bluetooth identity on Companion builds with BLE. A
+literal address must be BLE random-static, such as <code>C2:11:22:33:44:55</code>.
+<code>random</code> generates and saves one address; <code>random-every-boot</code> generates a new
+one on each startup (<code>random everyboot</code> is also accepted); <code>default</code> or <code>clear</code>
+restores the factory address. Reboot,
+forget the old phone entry, and pair again. Per-boot random mode requires
+pairing after every reboot. <code>get ble.mac</code> and <code>set ble.mac</code> are short aliases.</p>
 <pre><code>set lat {latitude}
 </code></pre>
 <p>Sets your advertisement map latitude. (decimal degrees)</p>

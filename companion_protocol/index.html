@@ -3278,6 +3278,10 @@ exist only so deployed clients do not break after a firmware update.</p>
 <td>Bluetooth name</td>
 <td><code>get bluetooth.name</code>; <code>set bluetooth.name &lt;name|default&gt;</code></td>
 </tr>
+<tr>
+<td>Bluetooth address</td>
+<td><code>get bluetooth.mac</code>; <code>set bluetooth.mac &lt;address|random|random-every-boot|default&gt;</code></td>
+</tr>
 </tbody>
 </table>
 <p>The framed form works over the normal binary USB, BLE, or TCP transport and
@@ -3344,6 +3348,14 @@ Companion transport per boot. Their active-mode constraints are:</p>
 <code>set bluetooth.name default</code> to restore <code>MeshCore-&lt;advert name&gt;</code>; an empty CLI
 value is rejected. (<code>clear</code> is also accepted as an alias for <code>default</code>.) A
 custom name is limited to 31 valid UTF-8 bytes and takes effect after reboot.</p>
+<p>Bluetooth Companion builds also accept <code>bluetooth.mac</code> (<code>ble.mac</code> is an
+alias). A literal address must be a BLE random-static address; <code>random</code>
+generates and saves one, <code>random-every-boot</code> rotates it at each startup, and
+<code>default</code> or <code>clear</code> restores the factory address. The change takes effect
+after reboot. The client must forget and re-pair the old identity. Per-boot
+random mode clears local peer bonds each startup and therefore requires a new
+pairing after every reboot. This is an application setting; an nRF52 OTAFIX
+bootloader continues to advertise its separate DFU identity.</p>
 <h3 id="bluetooth-lora-mota-source">Bluetooth LoRa mOTA source</h3>
 <p>Protocol v14 lets a phone control an install-capable Companion's own LoRa OTA
 session. An nRF52 Full Companion can additionally act as the source for a

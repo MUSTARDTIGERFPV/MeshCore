@@ -1027,6 +1027,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#view-or-change-the-bluetooth-address-ble-companion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View or change the Bluetooth address (BLE Companion)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#view-or-change-this-nodes-latitude" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4126,6 +4137,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#view-or-change-the-bluetooth-address-ble-companion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View or change the Bluetooth address (BLE Companion)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#view-or-change-this-nodes-latitude" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6621,6 +6643,52 @@ UTF-8 bytes without control characters and take effect after reboot.</p>
 (<code>CMD_RUN_CLI_COMMAND</code>), which works over USB, BLE, or TCP without entering USB
 terminal mode. See <a href="../companion_protocol/">Companion radio binary protocol</a> for
 the frame and reply format.</p>
+<hr />
+<h4 id="view-or-change-the-bluetooth-address-ble-companion">View or change the Bluetooth address (BLE Companion)</h4>
+<p><strong>Usage:</strong></p>
+<ul>
+<li><code>get bluetooth.mac</code></li>
+<li><code>set bluetooth.mac &lt;address|random|random-every-boot|default&gt;</code></li>
+</ul>
+<p><code>get ble.mac</code> and <code>set ble.mac ...</code> are accepted aliases. The setting is
+available on every Companion build that includes Bluetooth.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Result after reboot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C2:11:22:33:44:55</code></td>
+<td>Save and use that custom address.</td>
+</tr>
+<tr>
+<td><code>random</code></td>
+<td>Generate one random address now, save it, and reuse it on later boots.</td>
+</tr>
+<tr>
+<td><code>random-every-boot</code></td>
+<td>Generate a new address once at each boot. <code>random everyboot</code> is also accepted.</td>
+</tr>
+<tr>
+<td><code>default</code> or <code>clear</code></td>
+<td>Remove the override and use the chipset's factory Bluetooth address.</td>
+</tr>
+</tbody>
+</table>
+<p>A custom value must be a valid BLE random-static address in
+<code>XX:XX:XX:XX:XX:XX</code> form. Its first byte must be from <code>C0</code> through <code>FF</code>, and
+you are responsible for keeping addresses unique. Hyphens are also accepted
+on input; status output uses uppercase colons.</p>
+<p>Every change requires a reboot and invalidates the phone's previous view of
+the device. Forget the old device entry and pair again. <code>random-every-boot</code>
+also clears the Companion's saved peer bonds during each startup, so pairing
+and PIN entry are expected again after every reboot.</p>
+<p>This changes only the running MeshCore Companion application. On nRF52, the
+OTAFIX bootloader still uses its own address, which is visible only while the
+board is in BLE DFU/recovery mode. USB and LoRa updates are unaffected.</p>
 <hr />
 <h4 id="view-or-change-this-nodes-latitude">View or change this node's latitude</h4>
 <p><strong>Usage:</strong>
