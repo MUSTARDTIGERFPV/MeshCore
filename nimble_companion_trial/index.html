@@ -16,7 +16,7 @@
         <link rel="prev" href="../mbedtls-tls-footprint/">
       
       
-        <link rel="next" href="../nrf52_companion_storage_recovery/">
+        <link rel="next" href="../nimble_companion_trial_results/">
       
       
         
@@ -348,6 +348,60 @@
     
   
     CLI Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../companion_contact_cache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full Companion contact caches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../companion_contact_cache_results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact-cache and NimBLE RAM qualification
   
 
     
@@ -1025,6 +1079,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../nimble_companion_trial_results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ESP32-S3 NimBLE trial results, 2026-09-08
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../nrf52_companion_storage_recovery/" class="md-nav__link">
         
   
@@ -1537,6 +1618,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../v4_pixel5_font_trial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Small-screen Picopixel message font
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -1546,10 +1654,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_46" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_50" >
         
           
-          <label class="md-nav__link" for="__nav_46" id="__nav_46_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_50" id="__nav_50_label" tabindex="0">
             
   
   
@@ -1567,8 +1675,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_46_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_46">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_50_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_50">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1740,6 +1848,12 @@
 <p>These optional builds use NimBLE-Arduino 2.5.1 with the existing ESP32 Arduino
 2.0.17 toolchain. They are hardware qualification builds, outside the normal
 release matrix and firmware picker.</p>
+<p>See the <a href="../nimble_companion_trial_results/">2026-09-08 hardware results</a> for
+measured RAM, MAC-policy checks, WiFi updates, and remaining qualification.</p>
+<p>The <a href="../companion_contact_cache/">contact-cache guide</a> adds six optional
+350-contact trials for ESP32 boards without PSRAM, including Heltec V3.
+Their <a href="../companion_contact_cache_results/">qualification results</a> include
+linked RAM margins, V4/RAK hardware tests and the mOTA queue policy.</p>
 <table>
 <thead>
 <tr>
@@ -1771,6 +1885,9 @@ release matrix and firmware picker.</p>
 It is not the generic XIAO profile for separately wired radio modules. Both
 boards retain their parent Full Companion features, USB mOTA sender, WiFi
 update slots, and PSRAM-backed offline queue. The V4 also retains direct MQTT.</p>
+<p>The <a href="../v4_pixel5_font_trial/">small-screen Picopixel layout</a> uses 5-pixel
+capital letters, a compact channel/sender line and full message previews.
+A named V4 trial profile is available for hardware qualification.</p>
 <h2 id="build">Build</h2>
 <p>Enable the optional configuration in the ignored <code>platformio.local.ini</code>:</p>
 <pre><code class="language-ini">[platformio]
@@ -1867,6 +1984,7 @@ python3 -B test/test_heltec_v4_wifi_setup_page.py
 python3 -B test/test_firmware_ram.py
 python3 -B test/test_esp32_dram.py
 python3 -B test/test_shared_mota_queue.py
+python3 -B test/test_companion_mqtt_stack.py
 pio test -e native -f test_companion_node_prefs \
   -f test_ble_tx_stall_watchdog -f test_companion_frame_queue \
   -f test_display_driver
@@ -1876,7 +1994,10 @@ sanitizers with API doubles. It injects allocation, identity and bond failures;
 checks PIN authentication and stealth; and exercises 176-byte frames, MTU and
 notification subscription gating, retry and duplicate prevention. Embedded
 builds compile against the pinned real library. RAM reports retain the existing
-wireless budget; linked headroom is not a measurement of live free heap.</p>
+wireless budget; linked headroom is not a measurement of live free heap.
+The MQTT save callback also has a compiler-enforced stack-frame regression
+check: nested preference copies previously overflowed the V4 loop task when
+saving MQTT settings through WebConfig, despite sufficient free heap.</p>
 <p>Hardware qualification must additionally verify pairing and reconnection,
 advertised addresses for every MAC policy, contact synchronization, WiFi/BLE
 coexistence, and uptime under load. BlueZ results do not establish iOS or

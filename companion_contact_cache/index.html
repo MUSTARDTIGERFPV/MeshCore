@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://mikecarper.github.io/MeshCore/full_companion_usb_switcher/">
+        <link rel="canonical" href="https://mikecarper.github.io/MeshCore/companion_contact_cache/">
       
       
-        <link rel="prev" href="../full_companion_features/">
+        <link rel="prev" href="../cli_commands/">
       
       
-        <link rel="next" href="../gps_tracking/">
+        <link rel="next" href="../companion_contact_cache_results/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Full Companion USB CLI and binary switcher - MeshCore Docs</title>
+        <title>Full Companion contact caches - MeshCore Docs</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#full-companion-usb-cli-and-binary-switcher" class="md-skip">
+        <a href="#full-companion-contact-caches" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Full Companion USB CLI and binary switcher
+              Full Companion contact caches
             
           </span>
         </div>
@@ -364,10 +364,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../companion_contact_cache/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full Companion contact caches
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -383,6 +410,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#paths-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paths and persistence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-secrets-and-power" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared secrets and power
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-the-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspect the cache
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-messages-during-mota" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline messages during mOTA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-the-six-capacity-trials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the six capacity trials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regression-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regression checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -715,37 +828,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Full Companion USB CLI and binary switcher
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../full_companion_usb_switcher/" class="md-nav__link">
         
   
   
@@ -761,186 +847,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#wire-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wire formats
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-transitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State transitions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-automatic-detection-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How automatic detection works
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#manual-controls" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manual controls
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logging-and-mota-ownership" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Logging and mOTA ownership
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#shortcomings-and-edge-cases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Shortcomings and edge cases
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shortcomings and edge cases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#it-is-startup-selection-not-per-connection-negotiation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        It is startup selection, not per-connection negotiation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#detection-works-only-at-an-empty-prompt" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Detection works only at an empty prompt
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-first-frame-has-a-one-second-deadline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The first frame has a one-second deadline
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#framing-confirmation-is-not-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Framing confirmation is not authentication
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-terminal-banner-is-best-effort" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The terminal banner is best effort
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#text-and-binary-output-cannot-be-interleaved" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Text and binary output cannot be interleaved
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#a-literal-leading-briefly-hides-the-prompt" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A literal leading &lt; briefly hides the prompt
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1892,10 +1798,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#wire-formats" class="md-nav__link">
+  <a href="#paths-and-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Wire formats
+        Paths and persistence
       
     </span>
   </a>
@@ -1903,10 +1809,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#state-transitions" class="md-nav__link">
+  <a href="#shared-secrets-and-power" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State transitions
+        Shared secrets and power
       
     </span>
   </a>
@@ -1914,10 +1820,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-automatic-detection-works" class="md-nav__link">
+  <a href="#inspect-the-cache" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How automatic detection works
+        Inspect the cache
       
     </span>
   </a>
@@ -1925,10 +1831,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#manual-controls" class="md-nav__link">
+  <a href="#offline-messages-during-mota" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Manual controls
+        Offline messages during mOTA
       
     </span>
   </a>
@@ -1936,10 +1842,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#logging-and-mota-ownership" class="md-nav__link">
+  <a href="#build-the-six-capacity-trials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Logging and mOTA ownership
+        Build the six capacity trials
       
     </span>
   </a>
@@ -1947,104 +1853,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#shortcomings-and-edge-cases" class="md-nav__link">
+  <a href="#regression-checks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shortcomings and edge cases
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shortcomings and edge cases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#it-is-startup-selection-not-per-connection-negotiation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        It is startup selection, not per-connection negotiation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#detection-works-only-at-an-empty-prompt" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Detection works only at an empty prompt
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-first-frame-has-a-one-second-deadline" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The first frame has a one-second deadline
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#framing-confirmation-is-not-authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Framing confirmation is not authentication
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-terminal-banner-is-best-effort" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The terminal banner is best effort
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#text-and-binary-output-cannot-be-interleaved" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Text and binary output cannot be interleaved
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#a-literal-leading-briefly-hides-the-prompt" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A literal leading &lt; briefly hides the prompt
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
+        Regression checks
       
     </span>
   </a>
@@ -2068,7 +1880,7 @@
 
 
   
-    <a href="https://github.com/mikecarper/MeshCore/edit/keymindCascade/docs/full_companion_usb_switcher.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/mikecarper/MeshCore/edit/keymindCascade/docs/companion_contact_cache.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2076,223 +1888,212 @@
   
 
 
-<h1 id="full-companion-usb-cli-and-binary-switcher">Full Companion USB CLI and binary switcher</h1>
-<p>Full Companion uses one primary USB serial interface for two incompatible wire
-formats:</p>
-<ul>
-<li>a human-readable ASCII command line;</li>
-<li>the framed Binary Companion protocol used by MeshCore apps and <code>meshcli</code>.</li>
-</ul>
-<p>The primary interface starts in the ASCII terminal after each boot. A Binary
-Companion client does not need to send a special mode command: its first valid
-frame automatically hands the interface to the binary parser.</p>
-<p>This automatic behavior is compiled only into <code>companion_radio_full</code> targets.
-Ordinary USB Companion builds continue to use the explicit
-<code>+++MESHCORE-TERM-START</code> and <code>+++MESHCORE-TERM-STOP</code> controls described in the
-<a href="../terminal_chat_cli/">Terminal Chat CLI guide</a>.</p>
-<h2 id="wire-formats">Wire formats</h2>
-<p>Host-to-device Binary Companion frames use this layout:</p>
-<pre><code class="language-text">'&lt;'  length-low  length-high  payload[length]
-</code></pre>
-<p>Device-to-host frames use the same little-endian length with a different
-marker:</p>
-<pre><code class="language-text">'&gt;'  length-low  length-high  payload[length]
-</code></pre>
-<p>For example, a representative two-byte device query is:</p>
-<pre><code class="language-text">3C 02 00 16 03
-</code></pre>
-<p>The ASCII terminal is line-oriented and accepts commands such as:</p>
-<pre><code class="language-text">get radio.cad
-set display.rotation 90
-reboot
-</code></pre>
-<p>Changing the configured baud rate does not select a mode. Use 115200 for
-compatibility even though native USB CDC hardware does not use UART timing.</p>
-<h2 id="state-transitions">State transitions</h2>
-<pre><code class="language-text">                         complete '&lt;' frame
-                 +--------------------------------+
-                 |                                v
-boot ------&gt; ASCII terminal                  Binary Companion
-                 ^                                |
-                 |                                | +++MESHCORE-TERM-START
-                 | incomplete '&lt;' probe           |
-                 | (one-second timeout)            |
-                 +--------------------------------+
-
-ASCII terminal -- +++MESHCORE-TERM-STOP ------&gt; Binary Companion
-ASCII terminal -- observable USB disconnect ---&gt; Binary Companion
-ESP32 logging terminal -- usb.logging off -----&gt; ASCII terminal
-any mode ------- reboot ------------------------&gt; ASCII terminal
-</code></pre>
-<p>Serial mOTA and single-TTY logging add exclusive ownership states described
-below. BLE, WiFi, Ethernet, and hardware-serial Companion transports are not
-switched; they remain binary.</p>
-<h2 id="how-automatic-detection-works">How automatic detection works</h2>
-<ol>
-<li>Full Companion initializes the normal USB Binary Companion interface, then
-   gives its primary stream to the ASCII terminal before normal loop service
-   begins.</li>
-<li>While the prompt has no buffered input, the terminal peeks at the next byte.
-   It does not remove that byte.</li>
-<li>If the byte is <code>&lt;</code>, the terminal temporarily releases the stream and enables
-   the existing <code>ArduinoSerialInterface</code> frame parser.</li>
-<li>The parser consumes the original <code>&lt;</code>, the two-byte length, and the payload.
-   There is no second parser and no copied or synthetic frame.</li>
-<li>A monotonically increasing completed-frame counter confirms that the parser
-   received a complete frame. The interface then remains in Binary Companion
-   mode.</li>
-<li>If no complete frame arrives within one second, the parser state is reset
-   and the ASCII terminal prints a new banner and prompt.</li>
-</ol>
-<p>The switcher checks framing, not client identity. Any syntactically complete
-Binary Companion frame confirms binary mode; it does not require the first
-command to be <code>CMD_APP_START</code> or <code>CMD_DEVICE_QUERY</code>. Normal command validation
-still occurs after the frame parser returns the payload.</p>
-<p>The empty-prompt requirement prevents a literal <code>&lt;</code> in the middle of a command
-from silently changing modes. A literal <code>&lt;</code> typed as the first character does
-start a probe, but the terminal returns after the one-second timeout if no
-binary header and payload follow.</p>
-<h2 id="manual-controls">Manual controls</h2>
-<p>The original controls remain available.</p>
-<p>From Binary Companion, send this exact unframed line while the parser is idle:</p>
-<pre><code class="language-text">+++MESHCORE-TERM-START
-</code></pre>
-<p>Terminate it with CR or LF. The binary parser accepts control tokens only as
-complete delimiter-bounded lines; prefixes, suffixes, and partial tokens are
-ignored.</p>
-<p>From the ASCII terminal, send this exact sequence to return to binary mode:</p>
-<pre><code class="language-text">+++MESHCORE-TERM-STOP
-</code></pre>
-<p>The stop sequence takes effect as soon as its last byte arrives in ASCII mode.
-The start sequence is recognized only as a completed line while the binary
-parser is idle and is not examined inside a length-prefixed frame.</p>
-<p><code>meshcli</code> can normally connect directly after boot:</p>
-<pre><code class="language-bash">meshcli -s /dev/ttyACM0 -b 115200 ver
-</code></pre>
-<p>An explicit terminal start token is still useful when the device is already in
-binary mode:</p>
-<pre><code class="language-bash">picocom -b 115200 \
-  --imap spchex \
-  --initstring $'+++MESHCORE-TERM-START\r' \
-  /dev/ttyACM0
-</code></pre>
-<h2 id="logging-and-mota-ownership">Logging and mOTA ownership</h2>
-<p>The switcher never attempts to mix ASCII, framed Companion traffic, or binary
-mOTA traffic on the same stream.</p>
+<h1 id="full-companion-contact-caches">Full Companion contact caches</h1>
+<p>Full Companions on ESP32 and nRF52 without PSRAM now keep 16 outgoing paths
+and 16 shared secrets in RAM. Every contact remains in the contact table;
+selecting a different contact loads its saved path as needed. This recovers
+about 25.4 KiB of internal RAM in the 350-contact ESP32 qualification builds.</p>
+<p>See the <a href="../companion_contact_cache_results/">qualification results</a> for the
+six-board RAM comparison, physical tests, and shared-secret timings.</p>
+<p>PSRAM boards retain their existing complete contact table in external RAM.
+Legacy USB/BLE/WiFi Companion profiles also retain their inline paths and
+secrets. The build flag <code>MESH_CONTACT_CACHE=0</code> or <code>1</code> overrides this policy for
+qualification; it is not a runtime feature switch.</p>
+<h2 id="paths-and-persistence">Paths and persistence</h2>
+<p>The 16 resident paths use least-recently-used replacement. Contact records
+keep small handles to their saved paths, including 1-, 2-, and 3-byte hop
+hashes. The existing 152-byte contact record and Companion app frame formats
+are unchanged. ESP32 uses <code>/contacts3</code>; nRF52 also supports its paged contact
+store and migration from <code>/contacts3</code>. An erase is not required.</p>
+<p>A hot path needs no flash read. A cold path is read from its existing contact
+record. ESP32 reuses one open contact-file reader to avoid repeated SPIFFS
+metadata scans during synchronization and saving. It closes that reader
+before replacing the file or recovering a saved transaction.</p>
+<p>Changing a copied contact preserves the old path for a pending app response
+or rollback. Dirty entries are saved before eviction. If storage cannot be
+read, written, or represented completely, the operation fails instead of
+silently losing a contact or sending along a different route. Reboot retries
+an incomplete load from the preserved files. The path checksum also rejects
+a cold path changed underneath a live handle; it does not add a new checksum
+to the legacy ESP32 on-disk format.</p>
+<h2 id="shared-secrets-and-power">Shared secrets and power</h2>
+<p>Both platforms reuse the 16 most recent secrets from RAM. Cache misses use a
+platform-specific policy:</p>
 <table>
 <thead>
 <tr>
-<th>Situation</th>
-<th>Primary USB behavior</th>
+<th>Platform</th>
+<th>Miss behavior</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Full Companion after boot</td>
-<td>ASCII; a complete <code>&lt;</code> frame switches to Binary Companion</td>
+<td>ESP32</td>
+<td>Recalculate the secret without reading or writing a secret file.</td>
 </tr>
 <tr>
-<td>nRF52 logging enabled</td>
-<td>Primary interface still follows the switcher; logs use the optional second interface</td>
-</tr>
-<tr>
-<td>ESP32 logging enabled at boot</td>
-<td>Logging terminal owns the only USB TTY; automatic <code>&lt;</code> detection is disabled</td>
-</tr>
-<tr>
-<td>nRF52 USB serial mOTA active</td>
-<td>mOTA owns primary USB; ASCII and Binary Companion are unavailable there</td>
-</tr>
-<tr>
-<td>BLE/WiFi/Ethernet/hardware serial</td>
-<td>Always Binary Companion and unaffected by the USB mode</td>
+<td>nRF52</td>
+<td>Try a saved LittleFS entry, then recalculate if it is unavailable.</td>
 </tr>
 </tbody>
 </table>
-<p>On every ESP32 Full Companion, use <code>set usb.logging off</code> in its logging terminal
-before trying to use USB with an app. That command stops logging and returns to
-the ordinary ASCII terminal; it does not select Binary Companion. The app's
-first valid framed probe can perform the normal automatic switch, or a human
-can send <code>+++MESHCORE-TERM-STOP</code> first. The framed/binary Companion parser is
-disabled while logging owns that TTY. BLE and WiFi Companion transports remain
-available while USB is logging. ESP32 Full builds use the Arduino-ESP32 2.x
-base where supported; RC32 and ESP32-C6 keep their board-required Arduino 3.x
-platform but follow the same one-TTY policy. No ESP32 Full build enumerates a
-second CDC interface.</p>
-<p>On nRF52, serial <code>motatool</code> is also text-first. Its exact initial
-<code>ota folder on</code> line is recognized in either startup ASCII or Binary Companion
-mode. From ASCII, the firmware leaves terminal mode and directly enters
-exclusive mOTA ownership; from binary, the idle frame parser recognizes the
-same control sequence. The following mOTA request/reply frames therefore cannot
-be consumed by the ASCII line editor. <code>motatool serve --serial</code> can be the
-first client after boot and does not require a terminal token or disconnect
-workaround.</p>
-<p>Only the exact completed line selects mOTA from ASCII. Extra arguments,
-leading/trailing whitespace, or a partial line remain ordinary terminal input.</p>
-<h2 id="shortcomings-and-edge-cases">Shortcomings and edge cases</h2>
-<p>This mechanism is deliberately small and deterministic, but it is not a full
-protocol negotiation layer.</p>
-<h3 id="it-is-startup-selection-not-per-connection-negotiation">It is startup selection, not per-connection negotiation</h3>
-<p>After the first complete binary frame, the device stays in Binary Companion
-mode. Closing <code>meshcli</code> does not automatically restore ASCII. Use the terminal
-start token or reboot when an ASCII prompt is needed again.</p>
-<p>Conversely, closing an ASCII terminal on native USB normally changes the port
-to binary mode because the firmware can observe USB DTR/data disconnect. The
-next client therefore sees binary mode, not a new ASCII session. A USB-to-UART
-bridge often cannot report disconnect, so it can remain in ASCII until the stop
-token or a reboot.</p>
-<h3 id="detection-works-only-at-an-empty-prompt">Detection works only at an empty prompt</h3>
-<p>If part of an ASCII command is already buffered, an incoming <code>&lt;</code> is treated as
-ordinary terminal input. Clear or submit the line before starting a Binary
-Companion client. Only one process should have the serial port open.</p>
-<h3 id="the-first-frame-has-a-one-second-deadline">The first frame has a one-second deadline</h3>
-<p>The complete marker, length, and payload must arrive within the probe window.
-This is generous for local USB but may reject a heavily buffered serial proxy,
-a debugger that pauses the MCU, or a tool that writes the header and body with
-a long delay. A timed-out client can retry after the ASCII banner appears.</p>
-<h3 id="framing-confirmation-is-not-authentication">Framing confirmation is not authentication</h3>
-<p>Any complete length-prefixed frame selects binary mode, even if its command is
-unknown or malformed at the application layer. This is safe for stream
-separation but means a random complete frame can leave the device in binary
-mode until manually switched back.</p>
-<h3 id="the-terminal-banner-is-best-effort">The terminal banner is best effort</h3>
-<p>The firmware enters ASCII mode during boot, often before a host opens the CDC
-device. The banner may therefore be absent even though the terminal is ready;
-send a newline or a harmless <code>get</code> command rather than treating a missing
-banner as proof of binary mode.</p>
-<p>A host that remains connected across a reboot may receive ASCII banner and
-prompt bytes before the first binary response. Binary clients should discard
-leading bytes until a plausible <code>&gt;</code> frame marker and length are found, reject
-implausible lengths, and resynchronize. The ordinary open-after-boot path has
-been tested with <code>meshcli</code>, but third-party clients that assume byte zero is
-always <code>&gt;</code> may fail.</p>
-<h3 id="text-and-binary-output-cannot-be-interleaved">Text and binary output cannot be interleaved</h3>
-<p>Primary USB suppresses Binary Companion output while the terminal owns the
-stream. Packet/debug logging must use its dedicated CDC interface or the
-exclusive single-TTY logging mode. Writing diagnostic text directly to the
-primary binary stream will corrupt clients regardless of the switcher.</p>
-<h3 id="a-literal-leading-briefly-hides-the-prompt">A literal leading <code>&lt;</code> briefly hides the prompt</h3>
-<p>Typing <code>&lt;</code> as the first terminal character begins a binary probe. With no
-complete frame, the prompt returns after one second and the banner is printed
-again. There is currently no escape syntax for entering a literal leading <code>&lt;</code>;
-prefix it with another character if it is needed as command text.</p>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<p>If <code>meshcli</code> cannot connect:</p>
-<ol>
-<li>close every terminal or logging reader using the primary interface;</li>
-<li>on ESP32, confirm that saved USB logging is off;</li>
-<li>reboot and let <code>meshcli</code> be the first process to open the data interface;</li>
-<li>use the stable <code>/dev/serial/by-id/*-if00</code> path on Linux when available;</li>
-<li>if a prompt appears after one second, the client's first frame was not
-   completed inside the probe window.</li>
-</ol>
-<p>If an ASCII terminal shows no banner, press Enter and issue a harmless query
-such as <code>get radio.cad</code>. If binary bytes appear, send the exact terminal start
-token or reboot.</p>
-<p>The switch policy is implemented in
-<a href="https://github.com/mikecarper/MeshCore/blob/keymindCascade/src/helpers/UsbAsciiBinarySwitch.h"><code>UsbAsciiBinarySwitch.h</code></a>, with stream
-ownership in <a href="https://github.com/mikecarper/MeshCore/blob/keymindCascade/examples/companion_radio/main.cpp"><code>main.cpp</code></a> and framing in
-<a href="https://github.com/mikecarper/MeshCore/blob/keymindCascade/src/helpers/ArduinoSerialInterface.cpp"><code>ArduinoSerialInterface.cpp</code></a>.</p>
+<p>On the V4, a measured SPIFFS secret lookup took 132,427 microseconds while
+key exchange took 21,932 microseconds. ESP32 therefore uses recalculation on
+a RAM-cache miss. It avoids secret-file writes and reduces time awake for
+this measured workload. These are elapsed times, not measurements of energy
+in joules; other ESP32 hardware has not been physically benchmarked.</p>
+<p>On a RAK3401, a LittleFS lookup took 7,812 microseconds versus 31,250
+microseconds for key exchange. The nRF52 backend therefore uses saved flash
+entries to avoid repeat key exchange when a usable entry exists, including
+after reboot. Saved entries match the full
+peer public key and a fingerprint of the local key pair, and have a record
+checksum. Importing a different private or public key invalidates old results.
+A corrupt or missing saved entry is recalculated. The native tests use the
+firmware's actual Ed25519 key-exchange library and verify agreement with the
+peer's independently calculated secret.</p>
+<p>Derived secrets are expendable. Their storage keeps a reserve for contacts,
+preferences and filesystem metadata; a full filesystem leaves the calculated
+secret usable in RAM. nRF52 packs 56 entries into a 3,844-byte page to use its
+4 KiB flash blocks efficiently. Small filesystems may not have space to persist
+secrets for all 350 contacts. A miss without a usable saved entry still
+performs key exchange.</p>
+<p><code>MESH_CONTACT_SECRET_FLASH_CACHE=0</code> or <code>1</code> overrides the miss policy for
+qualification builds. The optional ESP32 flash backend groups eight entries
+per file. The normal ESP32 policy does not create or use those files.</p>
+<h2 id="inspect-the-cache">Inspect the cache</h2>
+<p>From the Full Companion's ASCII USB terminal or authenticated local CLI:</p>
+<pre><code class="language-text">get contact.cache
+</code></pre>
+<p>Cached builds report <code>paths=16 secrets=16</code>, <code>miss=calculate</code> or <code>miss=flash</code>,
+plus these boot-session counters:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_hits</code></td>
+<td>Shared secret reused from RAM.</td>
+</tr>
+<tr>
+<td><code>flash_hits</code></td>
+<td>Shared secret loaded from flash without recalculation.</td>
+</tr>
+<tr>
+<td><code>calculations</code></td>
+<td>Shared-secret key exchanges performed.</td>
+</tr>
+<tr>
+<td><code>save_skips</code></td>
+<td>Calculated secrets that could not be persisted, including storage reserve/backoff.</td>
+</tr>
+</tbody>
+</table>
+<p>Uncached builds report <code>paths=inline secrets=inline</code>. The normal <code>memory</code>
+command on supported ESP32 Full Companions shows live heap and queue capacity.</p>
+<p><code>get contact.cache.timing</code> reports the last successful flash lookup and last
+key calculation in microseconds. Zero means no such operation has completed
+since boot. These timings exclude secret writes and are useful for comparing
+the work avoided on a valid flash hit.</p>
+<h2 id="offline-messages-during-mota">Offline messages during mOTA</h2>
+<p>Contact caches are independent of the offline message queue. Builds using
+the shared mOTA queue retain <strong>256 frames normally and 128 while mOTA owns
+its workspace</strong>, then restore 256. No unread frames are discarded to start
+mOTA: synchronize the queue and retry if it exceeds the retained capacity.
+PSRAM-backed queues keep their existing capacity and allocation policy.</p>
+<p>Each queue frame occupies 177 bytes. Retaining 32 instead of 128 would make
+another 16,992 bytes (16.6 KiB) available inside the shared storage. It would
+not increase free heap by itself: the normal 256-frame storage is statically
+reserved, and the current mOTA context already fits in the loaned half. More
+mOTA scratch data would have to share that space to obtain an additional RAM
+saving. These changes keep the existing 128-frame mOTA limit.</p>
+<h2 id="build-the-six-capacity-trials">Build the six capacity trials</h2>
+<p>The optional environments in <code>platformio.nimble.ini</code> combine NimBLE, these
+contact caches, and the shared mOTA queue at <strong>350 contacts, 40 channels and
+256 normal offline frames</strong>. They remain outside the ordinary release matrix.
+The ordinary six constrained release recipes still use their established
+150-contact limits pending wider hardware qualification.</p>
+<p>Enable <code>platformio.nimble.ini</code> as described in the
+<a href="../nimble_companion_trial/">NimBLE trial guide</a>, then build one environment at
+a time. For example:</p>
+<pre><code class="language-sh">OUTPUT_DIR=.releases/contact-cache-v3 bash build.sh build-firmware \
+  Heltec_v3_ram_trial_companion_radio_full_nimble \
+  --firmware-version v1.17.1.5-halo-keymind-cascade-cache-trial \
+  --radio-preset usa-cascadia --profile cascade --standard --require-ota
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Hardware</th>
+<th>Trial environment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Heltec V3</td>
+<td><code>Heltec_v3_ram_trial_companion_radio_full_nimble</code></td>
+</tr>
+<tr>
+<td>Wireless Tracker</td>
+<td><code>Heltec_Wireless_Tracker_ram_trial_companion_radio_full_nimble</code></td>
+</tr>
+<tr>
+<td>Tracker V2, FEM on</td>
+<td><code>heltec_tracker_v2_ram_trial_companion_radio_full_femon_nimble</code></td>
+</tr>
+<tr>
+<td>Heltec CT62</td>
+<td><code>Heltec_ct62_ram_trial_companion_radio_full_nimble</code></td>
+</tr>
+<tr>
+<td>XIAO ESP32-C3</td>
+<td><code>Xiao_C3_ram_trial_companion_radio_full_nimble</code></td>
+</tr>
+<tr>
+<td>Generic ESP-NOW</td>
+<td><code>Generic_ESPNOW_ram_trial_companion_radio_full_nimble</code></td>
+</tr>
+</tbody>
+</table>
+<p>The firmware RAM guard remains enabled. A successful linked budget is distinct
+from live free heap and physical Bluetooth/LoRa qualification on each board.</p>
+<p>The smaller NimBLE applications let the CT62, XIAO C3 and Generic ESP-NOW
+trials use two 1.5 MiB WiFi OTA slots on 4 MiB flash. Their 896 KiB SPIFFS and
+coredump stay at the same addresses as the ordinary <code>huge_app.csv</code> Full
+layout. Install the trial's merged image over USB first to install its
+partition table. Subsequent WiFi updates must fit the new slots. An
+application-only update from the ordinary single-slot Full layout cannot
+change that layout or enable WiFi OTA.</p>
+<h2 id="regression-checks">Regression checks</h2>
+<pre><code class="language-sh">python3 -B test/test_contact_cache.py
+python3 -B test/test_companion_contact_persistence_contract.py
+python3 -B test/test_companion_contact_stream_contract.py
+python3 -B test/test_nrf52_extrafs_contract.py
+python3 -B test/test_shared_mota_queue.py
+python3 -B test/test_t096_full_memory.py
+python3 -B test/test_firmware_ram.py
+</code></pre>
+<p>The cache tests compile the production path/secret cache code and extracted
+production persistence, routing and request functions with filesystem/radio
+adapters. They exercise 350 routes, eviction, snapshot rollback, page
+migration, identity changes, read/write/rename faults, handle exhaustion,
+packet release on a failed path read, and recovery after a simulated reset
+between file renames. They do not simulate a physical flash power cut.</p>
+<p><code>tools/hil/contact_cache_serial_stress.py</code> checks all 350 paths over USB,
+replaces them with a different generation, and optionally exercises secret
+eviction. Use an otherwise empty test node and exclusive access to its
+Companion data port. <code>--populate</code> writes test contacts; <code>--secrets</code> transmits
+23 directed LoRa datagrams to synthetic peers. For an ESP32 cache trial:</p>
+<pre><code class="language-sh">python3 tools/hil/contact_cache_serial_stress.py --port /dev/ttyACM0 \
+  --populate --generation 1 --secrets --expect-calculate --reboot
+python3 tools/hil/contact_cache_serial_stress.py --port /dev/ttyACM0 \
+  --generation 1 --secrets --expect-calculate
+</code></pre>
+<p>Use the actual device path. Omit <code>--expect-calculate</code> for the nRF52 flash
+policy. The second invocation verifies the persisted paths after reboot.</p>
 
 
 
