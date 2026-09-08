@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://mikecarper.github.io/MeshCore/hardware_validation_checklist/">
       
       
-        <link rel="prev" href="../halo_keymind_settings/">
+        <link rel="prev" href="../hardware_validation_bluetooth_stealth_2026-09-07/">
       
       
         <link rel="next" href="../host_cli_service/">
@@ -715,6 +715,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardware_validation_bluetooth_stealth_2026-09-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XIAO Bluetooth stealth hardware validation - 2026-09-07
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -776,6 +803,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bluetooth-stealth-qualification-2026-09-07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bluetooth stealth qualification - 2026-09-07
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#current-marathon-ledger-through-2026-09-04" class="md-nav__link">
@@ -1581,10 +1619,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_43" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
         
           
-          <label class="md-nav__link" for="__nav_43" id="__nav_43_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
             
   
   
@@ -1602,8 +1640,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_43_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_43">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_44">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1701,6 +1739,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bluetooth-stealth-qualification-2026-09-07" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bluetooth stealth qualification - 2026-09-07
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#current-marathon-ledger-through-2026-09-04" class="md-nav__link">
@@ -1896,6 +1945,15 @@ and runtime switches, use <a href="../role_feature_switches/">feature switches b
 when its log identifies the physical device, firmware artifact, artifact hash,
 command result, and cold/warm boot outcome. Do not infer success from a tool's
 exit code when the tool has a documented false-success mode.</p>
+<h2 id="bluetooth-stealth-qualification-2026-09-07">Bluetooth stealth qualification - 2026-09-07</h2>
+<p>The <a href="../hardware_validation_bluetooth_stealth_2026-09-07/">XIAO stealth report</a>
+records exact artifacts for the initial implementation and independent-flag
+follow-up. The flag run covers custom/saved-random pairing and bonded reboot
+reconnect, idempotent <code>on</code>, <code>off</code> preserving the MAC, directed advertising,
+and both rotating policies with stealth still enabled. It also gives the
+repeatable hardware regression procedure. True battery-disconnected cold boot,
+phone address-privacy behavior, a second unbonded central, and ESP32 hardware
+remain separate uncompleted gates; do not infer them from the XIAO results.</p>
 <h2 id="current-marathon-ledger-through-2026-09-04">Current marathon ledger (through 2026-09-04)</h2>
 <table>
 <thead>

@@ -1352,6 +1352,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../hardware_validation_bluetooth_stealth_2026-09-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XIAO Bluetooth stealth hardware validation - 2026-09-07
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../hardware_validation_checklist/" class="md-nav__link">
         
   
@@ -2008,10 +2035,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_43" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
         
           
-          <label class="md-nav__link" for="__nav_43" id="__nav_43_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
             
   
   
@@ -2029,8 +2056,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_43_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_43">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_44">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3280,7 +3307,11 @@ exist only so deployed clients do not break after a firmware update.</p>
 </tr>
 <tr>
 <td>Bluetooth address</td>
-<td><code>get bluetooth.mac</code>; <code>set bluetooth.mac &lt;address|random|random-every-boot|default&gt;</code></td>
+<td><code>get bluetooth.mac</code>; <code>set bluetooth.mac &lt;address|random|random-every-boot|random-after-connect|default&gt;</code></td>
+</tr>
+<tr>
+<td>Bluetooth stealth</td>
+<td><code>get bluetooth.stealth</code>; <code>set bluetooth.stealth on|off</code></td>
 </tr>
 </tbody>
 </table>
@@ -3351,11 +3382,20 @@ custom name is limited to 31 valid UTF-8 bytes and takes effect after reboot.</p
 <p>Bluetooth Companion builds also accept <code>bluetooth.mac</code> (<code>ble.mac</code> is an
 alias). A literal address must be a BLE random-static address; <code>random</code>
 generates and saves one, <code>random-every-boot</code> rotates it at each startup, and
-<code>default</code> or <code>clear</code> restores the factory address. The change takes effect
-after reboot. The client must forget and re-pair the old identity. Per-boot
-random mode clears local peer bonds each startup and therefore requires a new
-pairing after every reboot. This is an application setting; an nRF52 OTAFIX
-bootloader continues to advertise its separate DFU identity.</p>
+<code>random-after-connect</code> retains it through unused boots but rotates it on the
+first boot after an authenticated connection. <code>default</code> or <code>clear</code> restores
+the factory address. The change takes effect after reboot.</p>
+<p><code>bluetooth.stealth on|off</code> (<code>ble.stealth</code> is an alias) is a separate flag,
+defaulting to off. It preserves the address policy and can be combined with
+custom, saved random, rotating random, or factory addresses. With stealth on,
+the node advertises normally until the first authenticated pairing, then
+permits only that bonded peer to reconnect. Address changes clear the saved
+peer and reopen pairing without disabling stealth. Rotating policies retain
+their normal rotation triggers. Repeating <code>on</code> does not clear an existing bond.
+Both flag changes require reboot. The old MAC value <code>stealth</code> is not accepted.</p>
+<p>BLE still transmits directed or allowlisted advertisements; stealth is not
+radio silence. These are application settings; an nRF52 OTAFIX bootloader
+continues to advertise its separate DFU identity.</p>
 <h3 id="bluetooth-lora-mota-source">Bluetooth LoRa mOTA source</h3>
 <p>Protocol v14 lets a phone control an install-capable Companion's own LoRa OTA
 session. An nRF52 Full Companion can additionally act as the source for a

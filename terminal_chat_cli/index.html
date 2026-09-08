@@ -718,6 +718,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../hardware_validation_bluetooth_stealth_2026-09-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XIAO Bluetooth stealth hardware validation - 2026-09-07
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../hardware_validation_checklist/" class="md-nav__link">
         
   
@@ -1443,10 +1470,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_43" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
         
           
-          <label class="md-nav__link" for="__nav_43" id="__nav_43_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
             
   
   
@@ -1464,8 +1491,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_43_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_43">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_44">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1673,15 +1700,27 @@ advertisement identity. A custom name may contain spaces and is limited to 31
 valid UTF-8 bytes. <code>default</code> restores <code>MeshCore-&lt;node name&gt;</code>. The saved change
 takes effect after reboot. <code>get ble.name</code> and <code>set ble.name</code> are short aliases.</p>
 <pre><code>get bluetooth.mac
-set bluetooth.mac {address|random|random-every-boot|default}
+set bluetooth.mac {address|random|random-every-boot|random-after-connect|default}
+get bluetooth.stealth
+set bluetooth.stealth {on|off}
 </code></pre>
 <p>Shows or changes the Bluetooth identity on Companion builds with BLE. A
 literal address must be BLE random-static, such as <code>C2:11:22:33:44:55</code>.
 <code>random</code> generates and saves one address; <code>random-every-boot</code> generates a new
-one on each startup (<code>random everyboot</code> is also accepted); <code>default</code> or <code>clear</code>
-restores the factory address. Reboot,
-forget the old phone entry, and pair again. Per-boot random mode requires
-pairing after every reboot. <code>get ble.mac</code> and <code>set ble.mac</code> are short aliases.</p>
+one on each startup (<code>random everyboot</code> is also accepted).
+<code>random-after-connect</code> keeps its address across unused power cycles, then
+rotates on the next boot after an authenticated connection. <code>default</code> or
+<code>clear</code> restores the factory address without changing the stealth flag.
+Reboot, forget the old phone entry, and pair again after an address change.
+<code>get ble.mac</code> and <code>set ble.mac</code> are short aliases.</p>
+<p>The independent <code>bluetooth.stealth</code> flag defaults off and preserves the chosen
+address policy. With it on, the node is discoverable until its first
+authenticated pairing, then accepts only that bonded peer. Custom and saved
+random addresses keep the bond across boots; rotating modes reopen pairing
+when the address rotates, leaving stealth enabled. It still transmits the
+directed or allowlisted packets BLE requires for reconnection. Repeating <code>on</code>
+keeps the bond. Send <code>off</code>, then <code>on</code>, then reboot to reopen pairing manually.
+<code>ble.stealth</code> is the short alias. Flag changes require reboot.</p>
 <pre><code>set lat {latitude}
 </code></pre>
 <p>Sets your advertisement map latitude. (decimal degrees)</p>

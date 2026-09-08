@@ -1038,6 +1038,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#view-or-change-bluetooth-stealth-ble-companion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View or change Bluetooth stealth (BLE Companion)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#view-or-change-this-nodes-latitude" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2732,6 +2743,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../hardware_validation_bluetooth_stealth_2026-09-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XIAO Bluetooth stealth hardware validation - 2026-09-07
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../hardware_validation_checklist/" class="md-nav__link">
         
   
@@ -3388,10 +3426,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_43" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
         
           
-          <label class="md-nav__link" for="__nav_43" id="__nav_43_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
             
   
   
@@ -3409,8 +3447,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_43_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_43">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_44">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4141,6 +4179,17 @@
     <span class="md-ellipsis">
       
         View or change the Bluetooth address (BLE Companion)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-or-change-bluetooth-stealth-ble-companion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View or change Bluetooth stealth (BLE Companion)
       
     </span>
   </a>
@@ -6648,7 +6697,7 @@ the frame and reply format.</p>
 <p><strong>Usage:</strong></p>
 <ul>
 <li><code>get bluetooth.mac</code></li>
-<li><code>set bluetooth.mac &lt;address|random|random-every-boot|default&gt;</code></li>
+<li><code>set bluetooth.mac &lt;address|random|random-every-boot|random-after-connect|default&gt;</code></li>
 </ul>
 <p><code>get ble.mac</code> and <code>set ble.mac ...</code> are accepted aliases. The setting is
 available on every Companion build that includes Bluetooth.</p>
@@ -6673,6 +6722,10 @@ available on every Companion build that includes Bluetooth.</p>
 <td>Generate a new address once at each boot. <code>random everyboot</code> is also accepted.</td>
 </tr>
 <tr>
+<td><code>random-after-connect</code></td>
+<td>Keep one random address through unused boots. After an authenticated connection, arm a new address for the next boot.</td>
+</tr>
+<tr>
 <td><code>default</code> or <code>clear</code></td>
 <td>Remove the override and use the chipset's factory Bluetooth address.</td>
 </tr>
@@ -6686,9 +6739,52 @@ on input; status output uses uppercase colons.</p>
 the device. Forget the old device entry and pair again. <code>random-every-boot</code>
 also clears the Companion's saved peer bonds during each startup, so pairing
 and PIN entry are expected again after every reboot.</p>
+<p><code>random-after-connect</code> keeps the same address across any number of reboots when
+nobody successfully authenticated. As soon as an authenticated BLE connection
+succeeds, the next boot rotates the address and clears stale bonds. The marker
+is saved while connected, so a normal reboot, power switch, or battery pull
+after that connection all produce the same next-boot rotation.</p>
+<p>The address setting does not enable or disable stealth. Use the separate
+<code>bluetooth.stealth</code> flag below. <code>default</code> changes only the address policy.</p>
+<h4 id="view-or-change-bluetooth-stealth-ble-companion">View or change Bluetooth stealth (BLE Companion)</h4>
+<pre><code class="language-text">get bluetooth.stealth
+set bluetooth.stealth on
+set bluetooth.stealth off
+</code></pre>
+<p><code>get ble.stealth</code> and <code>set ble.stealth on|off</code> are short aliases. This flag
+defaults to <code>off</code> and is independent of the Bluetooth address policy. Enabling
+or disabling it keeps the configured custom/random/factory address policy
+unchanged and requires a reboot. Repeating <code>on</code> keeps an existing stealth
+pairing; repeating <code>off</code> does not alter address settings.</p>
+<p>For a custom address with stealth:</p>
+<pre><code class="language-text">set bluetooth.mac C2:11:22:33:44:55
+set bluetooth.stealth on
+reboot
+</code></pre>
+<p>Use <code>set bluetooth.mac random</code> instead of the first line for one saved random
+address. Both combinations keep their address and bond across later boots.
+Rotating policies still rotate: <code>random-every-boot</code> reopens pairing at every
+boot, while <code>random-after-connect</code> reopens it on the first boot after an
+authenticated connection. Stealth stays enabled; each new address begins
+with a fresh pairing window so it cannot get hidden behind an unusable bond.</p>
+<p>With stealth on, the node is normally discoverable until the first authenticated pairing.
+After that, nRF52 uses directed advertising to the saved peer. ESP32 uses a
+minimal unnamed advertisement and a controller allowlist because its common
+Arduino BLE API does not expose the directed-advertising peer field. Both
+reject connection and scan requests from other peers. BLE cannot be completely
+radio silent and still accept a connection, so a passive radio sniffer may
+still observe packets. To deliberately clear the saved stealth peer, send
+<code>set bluetooth.stealth off</code>, then <code>set bluetooth.stealth on</code>, then reboot over
+USB or an existing authenticated connection. To leave stealth, set it <code>off</code>
+and reboot. If the saved node-side bond is lost, recovery reopens pairing.
+The former <code>set bluetooth.mac stealth</code> command is no longer accepted.</p>
 <p>This changes only the running MeshCore Companion application. On nRF52, the
 OTAFIX bootloader still uses its own address, which is visible only while the
-board is in BLE DFU/recovery mode. USB and LoRa updates are unaffected.</p>
+board is in BLE DFU/recovery mode. USB and LoRa updates are unaffected.
+Bluetooth update tools must follow that separate bootloader address after the
+handoff; they must not assume that a custom application address remains the
+DFU address. See the <a href="../hardware_validation_bluetooth_stealth_2026-09-07/">hardware observations</a>
+for the tested XIAO handoff and host-cache caveats.</p>
 <hr />
 <h4 id="view-or-change-this-nodes-latitude">View or change this node's latitude</h4>
 <p><strong>Usage:</strong>

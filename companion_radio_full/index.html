@@ -909,6 +909,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../hardware_validation_bluetooth_stealth_2026-09-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XIAO Bluetooth stealth hardware validation - 2026-09-07
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../hardware_validation_checklist/" class="md-nav__link">
         
   
@@ -1565,10 +1592,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_43" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
         
           
-          <label class="md-nav__link" for="__nav_43" id="__nav_43_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
             
   
   
@@ -1586,8 +1613,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_43_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_43">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_44">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2290,13 +2317,23 @@ Custom names replace the complete Bluetooth label rather than inheriting the
 prefix, accept up to 31 valid UTF-8 bytes, and take effect after reboot. This
 does not change the node's mesh advertisement name.</p>
 <p>Every Bluetooth Companion also supports <code>get bluetooth.mac</code> and
-<code>set bluetooth.mac &lt;address|random|random-every-boot|default&gt;</code>. A literal
-address is a BLE random-static identity, <code>random</code> creates one persistent
-identity, <code>random-every-boot</code> rotates it on startup, and <code>default</code> (or <code>clear</code>)
-restores the chipset address. Reboot and re-pair after changing modes. The
-per-boot mode intentionally clears local bonds and needs a new pairing after
-every reboot. On nRF52 this affects the MeshCore application only, not the
-OTAFIX bootloader's separate BLE DFU identity.</p>
+<code>set bluetooth.mac &lt;address|random|random-every-boot|random-after-connect|default&gt;</code>.
+A literal address is a BLE random-static identity, <code>random</code> creates one
+persistent identity, <code>random-every-boot</code> rotates it on startup, and
+<code>random-after-connect</code> rotates it on the first boot after an authenticated
+connection while leaving unused boots unchanged. <code>default</code> (or <code>clear</code>)
+restores the chipset address. None of these values changes the stealth flag.
+Reboot and re-pair after changing modes or after a rotation. Address rotation
+clears stale local bonds. On nRF52 this affects the MeshCore application only,
+not the OTAFIX bootloader's separate BLE DFU identity.</p>
+<p><code>get bluetooth.stealth</code> and <code>set bluetooth.stealth on|off</code> control an independent
+flag, defaulting to off. Combine it with a custom address or <code>random</code> to retain
+the address and bond across boots. With stealth on, normal discovery ends
+after the first authenticated pairing and only the saved peer may reconnect.
+Rotating MAC policies still rotate and reopen first pairing when they do;
+stealth remains enabled. Repeating <code>on</code> keeps an existing bond. Toggle <code>off</code>,
+then <code>on</code>, then reboot to reset first pairing. All flag changes need reboot.
+The node still sends directed or allowlisted BLE packets; it is not radio silent.</p>
 <p>ESP32 ports 5000, 5001, 5002, and WebConfig have no independent login layer.
 Expose them only on a trusted LAN or temporary setup network. See
 <a href="../WiFi/">WiFi setup</a> for credential setup and reconnect behavior.</p>
