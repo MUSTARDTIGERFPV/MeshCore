@@ -1114,6 +1114,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../nimble_companion_trial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ESP32-S3 NimBLE Full Companion trial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../nrf52_companion_storage_recovery/" class="md-nav__link">
         
   
@@ -1635,10 +1662,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_45" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_46" >
         
           
-          <label class="md-nav__link" for="__nav_45" id="__nav_45_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_46" id="__nav_46_label" tabindex="0">
             
   
   
@@ -1656,8 +1683,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_45_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_45">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_46_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_46">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2111,9 +2138,30 @@ automatically:</p>
 automation detects and performs this token-wrapped preflight itself, so no
 extra command-line option is needed.</p>
 <p>For an ESP32 full Companion, test its separate WiFi control console instead:</p>
-<pre><code class="language-bash">printf 'ota status\r\n' | nc 192.168.1.50 5002
+<pre><code class="language-bash">./tools/lora_ota/lora_ota.sh --tcp-cli 192.168.1.50 &quot;ota status&quot;
 </code></pre>
 <p>It must report <code>OTA seeder</code>, <code>install:disabled</code>, and target <code>00000000</code>.</p>
+<p>This standalone fallback uses Python's raw TCP socket directly. It works with
+<code>meshcli</code> versions whose <code>-r</code> mode rejects <code>-t</code>; it does not need <code>meshcli</code>,
+<code>motatool</code>, <code>nc</code>, or a firmware package. It defaults to text port 5002; port
+5000 speaks the binary Companion protocol and port 5001 serves mOTA data.
+The firmware must expose the text console; this option does not enable one.</p>
+<p>Specify a port or adjust the total connection/command timeout (10 seconds by
+default):</p>
+<pre><code class="language-bash">./tools/lora_ota/lora_ota.sh --tcp-cli 192.168.1.50:5002 --timeout 15 &quot;ver&quot;
+</code></pre>
+<p>PowerShell uses the same option:</p>
+<pre><code class="language-powershell">.\tools\lora_ota\lora_ota.ps1 --tcp-cli 192.168.1.50 &quot;ota status&quot;
+</code></pre>
+<p>Place <code>--tcp-cli</code> first. Each invocation sends one command and waits for the
+complete reply and terminal prompt. Connection failures, timeouts, missing
+replies, and rejected commands exit nonzero. If USB owns the terminal, close
+the active USB terminal and try again. Commands are never automatically resent
+in this standalone mode: a timeout after sending may mean the command executed
+but its reply was lost. Inspect the device state before repeating a change.</p>
+<p>For an actual OTA run, continue using <code>--source-tcp HOST:5001</code> with
+<code>--source-cli-tcp HOST:5002</code>; that existing control path also bypasses <code>meshcli</code>
+raw mode. The standalone fallback does not transfer a firmware image itself.</p>
 <p>Changing a terminal to 57600 baud does not select ASCII mode. USB Companion
 builds and the normal raw management CLI use 115200 unless a particular build
 was explicitly configured otherwise.</p>
