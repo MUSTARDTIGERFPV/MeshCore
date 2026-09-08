@@ -2009,10 +2009,10 @@ identify the destination, validate the hardware and running firmware, prepare
 the right container, move the participating nodes to a temporary radio
 channel, serve and monitor the download, request installation, restore the
 controller, and check the rebooted node.</p>
-<p>The script cannot install the destination's first OTA-capable firmware. It is
-also deliberately application-only: it rejects both v3 bootloader containers
-and a v2 container carrying the bootloader flag, and it never sends the
-privileged install command. Do the first nRF52 bootloader installation over USB.
+<p>The script cannot install the destination's first OTA-capable firmware. It can
+stage signed v3 bootloader containers with <code>--no-install</code>, but never sends the
+privileged bootloader install command. Invalid v2 containers carrying the
+bootloader flag remain rejected. Do the first nRF52 bootloader installation over USB.
 An already-capable, explicitly supported internal-flash, XIAO QSPI, or exact
 MeshTower V2 microSD repeater may later use the separate manual
 <a href="../ota_nrf52_bootloader_update/"><code>ota bootloader install</code></a> workflow.</p>
@@ -2069,8 +2069,33 @@ Without that flag, even <code>--yes</code> stops before opening a radio. Bootloa
 requires Python <code>cryptography</code> in the interpreter running the wrapper and a
 current <code>motatool</code> supporting format 3. The runner reuses <code>tools/mota/motalib.py</code>
 for strict geometry, embedded identity/CRC, capability, hash and signature
-validation, and still runs <code>motatool verify</code> including any <code>--public-key</code> pin.
-It probes actual <code>motatool inspect</code> support before radio access: older and newer
+validation, and still runs <code>motatool verify</code> including any <code>--public-key</code> pin.</p>
+<p>If Python cannot load <code>cryptography</code>, an interactive run offers:</p>
+<pre><code class="language-text">Install cryptography privately and retry signature verification? [y/N]
+</code></pre>
+<p>After approval, it uses the <strong>exact running Python interpreter</strong> to install
+<code>cryptography==50.0.1</code> and its dependencies from PyPI into a separate per-user,
+per-interpreter cache. Binary wheels only are accepted; the repair does not
+compile native code, overwrite system/virtual-environment packages, change PATH,
+use <code>sudo</code>, or bypass externally-managed Python protections. It checks Ed25519
+against a known valid signature and a tampered message, then retries the original
+full package verification. A later run can reuse a working cache without another
+download. This works for direct <code>.mota</code> files and bootloader members inside ZIPs;
+ordinary application updates and raw <code>--tcp-cli</code> commands do not need this library.</p>
+<p>The interpreter must have working pip. If pip is missing, the script gives an
+exact-interpreter <code>ensurepip</code> command and operating-system pip/venv guidance;
+it does not silently install system tools. No compatible binary wheel, an old
+pip, network/download failures, an unwritable cache, or a failed signature check
+stop the run before radio access. Pip output is shown and installation is bounded
+at ten minutes. The radio admin-password environment variable is not passed to
+pip. Partial installation files may remain in the displayed private directory.
+The cache is under <code>meshcore-lora-ota/python/&lt;interpreter-id&gt;/cryptography==50.0.1</code>
+in the same per-user cache base described below for <code>motatool</code>.</p>
+<p>Only <code>y</code> or <code>yes</code> approves this repair; <code>--yes</code> is <strong>not</strong> installation consent.
+Noninteractive runs print a copyable private-install command and stop. After
+running that command manually, rerun the original OTA command; no Python path
+changes are needed. Declining never skips signature verification.</p>
+<p>It probes actual <code>motatool inspect</code> support before radio access: older and newer
 builds may advertise the same version. If the tool is missing or incompatible,
 an interactive run offers an automatic repair:</p>
 <pre><code class="language-text">Install this bootloader-capable motatool and continue after verification? [y/N]
@@ -2078,7 +2103,7 @@ an interactive run offers an automatic repair:</p>
 <p>Only <code>y</code> or <code>yes</code> approves installation. <strong><code>--yes</code> does not approve host software
 installation.</strong> Noninteractive runs stop and print a copyable manual installation
 command plus the <code>--motatool</code> argument to use afterward.</p>
-<p>The repair builds the <a href="https://github.com/mikecarper/motatool">mikecarper/motatool</a>
+<p>The motatool repair builds the <a href="https://github.com/mikecarper/motatool">mikecarper/motatool</a>
 fork at pinned revision <code>8c38369e7d35ad50cf74261869676d52dd24adf7</code>, with Cargo's
 <code>--locked</code> dependencies, in a separate per-user cache directory. It needs
 Rust/Cargo and a native linker already installed; otherwise it points to
@@ -2171,8 +2196,17 @@ firmware bytes needed to create a delta. Keep the <code>.pio/build/ENV/firmware.
 that was actually flashed. A matching filename or version alone is not enough.</p>
 <h2 id="1-install-the-host-tools">1. Install the host tools</h2>
 <p>Install Python 3.10 or newer, <a href="https://rustup.rs/">Rust</a>, Git, the official
-<a href="https://github.com/meshcore-dev/meshcore-cli"><code>meshcore-cli</code></a>, and the official
+<a href="https://github.com/meshcore-dev/meshcore-cli"><code>meshcore-cli</code></a> <strong>1.6.0 or newer</strong>, and the official
 <a href="https://github.com/vk496/motatool"><code>motatool</code></a>.</p>
+<p>For signed bootloader staging, see the automatic <code>cryptography</code> and
+bootloader-capable <code>motatool</code> repairs above. Pip is needed only when installing
+the missing Python dependency; Rust/Cargo and a native linker are needed only
+when building motatool, not when using an already compatible binary. The
+runner checks the selected meshcli version before opening radios. Keep its
+serial/BLE dependencies in meshcli's own environment (pipx handles these);
+installing cryptography in meshcli's pipx environment does not make it available
+to the separate Python interpreter running this wrapper. A ready bootloader
+<code>.mota</code> does not need the Python <code>detools</code> or <code>intelhex</code> build dependencies.</p>
 <p>On Bash:</p>
 <pre><code class="language-bash">python3 -m pip install --user pipx
 python3 -m pipx ensurepath
