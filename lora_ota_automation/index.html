@@ -924,6 +924,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bootloader-packages-and-station-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bootloader packages and station identifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#destination-requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1795,6 +1806,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bootloader-packages-and-station-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bootloader packages and station identifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#destination-requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2035,6 +2057,69 @@ ESP32 builds that also retain serial folder support use the same exclusive USB
 mOTA ownership state as nRF52. The exact <code>ota folder on</code> line transfers the USB
 port from startup ASCII or idle Binary Companion mode before binary mOTA frames
 begin; neither console mode shares that port until the folder detaches.</p>
+<h2 id="bootloader-packages-and-station-identifiers">Bootloader packages and station identifiers</h2>
+<p>Both wrappers use the same package-aware runner. It identifies application
+versus bootloader updates from container metadata, not filenames. A ZIP mixing
+application inputs and bootloader mOTAs requires <code>--zip-member</code>; their versions
+and target IDs are independent and must not be ranked together.</p>
+<p>Signed format-3 nRF52 bootloader packages can be <strong>staged with <code>--no-install</code></strong>.
+Use the same controller/source/TempRadio arguments as an application transfer,
+but provide the bootloader <code>.mota</code> (or its ZIP member) and <code>--no-install</code>.
+Without that flag, even <code>--yes</code> stops before opening a radio. Bootloader staging
+requires Python <code>cryptography</code> in the interpreter running the wrapper and a
+current <code>motatool</code> supporting format 3. The runner reuses <code>tools/mota/motalib.py</code>
+for strict geometry, embedded identity/CRC, capability, hash and signature
+validation, and still runs <code>motatool verify</code> including any <code>--public-key</code> pin.
+It probes actual <code>motatool inspect</code> support before radio access: older and newer
+builds may advertise the same version. If the tool is missing or incompatible,
+an interactive run offers an automatic repair:</p>
+<pre><code class="language-text">Install this bootloader-capable motatool and continue after verification? [y/N]
+</code></pre>
+<p>Only <code>y</code> or <code>yes</code> approves installation. <strong><code>--yes</code> does not approve host software
+installation.</strong> Noninteractive runs stop and print a copyable manual installation
+command plus the <code>--motatool</code> argument to use afterward.</p>
+<p>The repair builds the <a href="https://github.com/mikecarper/motatool">mikecarper/motatool</a>
+fork at pinned revision <code>8c38369e7d35ad50cf74261869676d52dd24adf7</code>, with Cargo's
+<code>--locked</code> dependencies, in a separate per-user cache directory. It needs
+Rust/Cargo and a native linker already installed; otherwise it points to
+<a href="https://rustup.rs/">Rust installation</a> and stops without installing anything.
+Source/dependency downloads, build time and disk use are disclosed before
+confirmation. Cargo progress is displayed, with a one-hour build timeout.
+The radio admin-password environment variable is not passed to the build.</p>
+<p>The installer does not overwrite the selected/system <code>motatool</code> or alter PATH.
+It may replace only a previous copy in its displayed private install directory.
+After installation it repeats the bootloader-package capability check and uses
+the new binary for this run only if that check passes. A later run using the
+default <code>motatool</code> selection can reuse the checked cache without downloading
+again; switching from an explicit <code>--motatool</code> path still asks permission.
+Refusal, a failed build, or a failed recheck stops before opening any radio.
+Failed build files may remain in the displayed cache directory for diagnostics.</p>
+<p>The install root is <code>meshcore-lora-ota/motatool/&lt;revision&gt;</code> under <code>%LOCALAPPDATA%</code>
+on Windows, <code>~/Library/Caches</code> on macOS, or <code>$XDG_CACHE_HOME</code> (default
+<code>~/.cache</code>) on Linux. Cargo uses an explicit
+<a href="https://doc.rust-lang.org/cargo/commands/cargo-install.html"><code>--root</code>, <code>--rev</code>, and <code>--locked</code></a>
+instead of replacing a global installation or following a moving branch.</p>
+<p>Before transfer it queries the destination's <code>ota bootloader status</code>, checks its
+bootloader-specific target/hardware identity, installed ABI/codecs and matching
+internal/QSPI/SD storage profile. It does not compare an application version or
+application target ID to a bootloader package. After transfer it checks the
+destination's exact staged MID and image-hash confirmation, then prints the
+manual command; it <strong>never sends a bootloader install command</strong>:</p>
+<pre><code class="language-text">ota bootloader status
+ota bootloader install &lt;MID8&gt; &lt;HASH16&gt;
+</code></pre>
+<p>Review and send those commands on the <strong>destination</strong>, not the source. The
+device independently enforces signer authorization, safe live storage,
+continuity and upgrade-only policy at installation. <code>--base</code>,
+<code>--allow-non-upgrade</code>, and <code>--prepare-only</code> remain application-only. See the
+<a href="../ota_nrf52_bootloader_update/">bootloader prerequisites and recovery limits</a>.</p>
+<p><code>TARGET_NODE</code>, <code>--relay</code>, and <code>--source-contact</code> accept a contact name, full
+public key, or unique hexadecimal key prefix. The runner reads the controller's
+existing contact table and binds each selection to a full key before remote
+commands, so emoji names need not be typed and later name changes cannot
+redirect the run. Duplicate names, ambiguous prefixes, or the same radio under
+different participant aliases stop with an actionable error. Missing contacts
+must first be imported or discovered; a key alone does not create a contact.</p>
 <h2 id="destination-requirements">Destination requirements</h2>
 <table>
 <thead>
@@ -2486,7 +2571,7 @@ well as individual ZIP members, are rejected above 64 MiB before being loaded.</
   If the version gate required RXPS off, it stays off while that topology is
   preserved; use <code>target-rxps-settings.json</code> to restore it only after sending
   <code>normalradio</code>.</li>
-<li><code>--allow-non-upgrade</code> deliberately permits the same or an older version.</li>
+<li><code>--allow-non-upgrade</code> deliberately permits the same or an older application version.</li>
 <li><code>--replace-active-download</code> deliberately discards a different update already
   downloading or staged on the target. Without it, that update is preserved.</li>
 <li><code>--source-shares-controller</code> is for a Full Companion whose USB Binary API is
