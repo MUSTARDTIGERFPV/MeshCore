@@ -747,6 +747,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../firmware_memory_budget/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware memory checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../firmware_picker/" class="md-nav__link">
         
   
@@ -1592,10 +1619,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_44" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_45" >
         
           
-          <label class="md-nav__link" for="__nav_44" id="__nav_44_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_45" id="__nav_45_label" tabindex="0">
             
   
   
@@ -1613,8 +1640,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_44_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_44">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_45_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_45">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2223,6 +2250,11 @@ SX1262 and SX1268 use 100 contacts, 30 group channels, and a 16-frame queue.
 These capacities preserve the required 8 KiB static internal-DRAM reserve
 alongside MOTA and all Full transports; their ordinary transport-specific
 images retain 160 contacts, 40 channels, and 128 queued frames.</p>
+<p>The 1.17.1.5 memory replacements for Generic ESP-NOW, Heltec Wireless Paper,
+Wireless Tracker, CT62, V3, Tracker V2, and XIAO C3 Full Companion use <strong>150
+contacts</strong> and retain their <strong>256-frame queue</strong> and Full transports. Export
+contacts before updating if you have more than 150; entries beyond the new
+limit may be unavailable and a later save may omit them.</p>
 <p>Full Companions normally retain 256 pending Companion message frames. ESP32
 boards with configured PSRAM retain 512 and allocate that queue from PSRAM
 before WiFi and BLE start. If PSRAM is unavailable at runtime, allocation falls
@@ -2232,6 +2264,10 @@ Companion startup memory line reports the capacity actually allocated as
 direct messages; it is not flash-backed history. See
 <a href="../companion_offline_queue/">Companion offline message queue</a> for all platform
 defaults and full-queue behavior.</p>
+<p>Every corrected nRF52 Full profile keeps <strong>256 offline frames normally</strong> and
+temporarily lends 128 slots to mOTA to leave room for
+Bluetooth tasks, displays and UI allocations. Queue sharing preserves the
+board's contacts, channels, and USB/Bluetooth mOTA sending. See the <a href="../releases/1.17.1.5/#t096-full-companion-bluetooth-and-menu-freeze-report">memory correction</a>.</p>
 <p>The nRF52 target inherits the board's ordinary USB Companion installation
 format and adds BLE plus the serial mOTA source. It does not enable an SD cache
 or any other board-specific storage behavior; host files are streamed as they
