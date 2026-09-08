@@ -1796,16 +1796,28 @@ SF7, CR5. Saved node settings survive ordinary firmware updates.</p>
 repeaters) were checked against the new
 <a href="../../firmware_memory_budget/">runtime RAM policy</a>. <strong>All 11 failing profiles
 have replacements</strong>, and the same queue sharing has been applied to the other
-41 nRF52 Full profiles: <strong>52 corrected profiles in total</strong>, built from
+41 nRF52 Full profiles: <strong>52 corrected profiles in total</strong>, initially built from
 <a href="https://github.com/mikecarper/MeshCore/tree/aa20e9278ebdd574c4769fdb58d46fd9d4face68"><code>aa20e927</code></a>.
-The existing release tags stay in place; corrected filenames end in <code>aa20e927</code>.
+The existing release tags stay in place; corrected filenames end in <code>aa20e927</code>,
+except Wireless Paper Full's capacity-restoring follow-up, <code>1e4d1e16</code>.
 Companion remains Latest. Both Mesh America catalogs and the firmware picker
 point to the replacement files.</p>
 <p>All 43 nRF52 Full Companions keep 256 offline frames normally and lend 128
-slots to mOTA while needed. The seven corrected ESP32 Full profiles below use
-<strong>150 contacts</strong>, preserving their 256-frame queue and Full transports.
+slots to mOTA while needed. Wireless Paper Full now also shares its queue and
+keeps <strong>350 contacts and 40 channels</strong>. The other six corrected ESP32 Full
+profiles below use <strong>150 contacts</strong>, preserving their 256-frame queue and Full transports.
 <strong>Export contacts before upgrading if you have more than 150</strong>; entries beyond
-that limit may be unavailable and a later save may omit them.</p>
+that limit may be unavailable and a later save may omit them. This warning
+applies to those six profiles and the superseded <code>aa20e927</code> Wireless Paper image.</p>
+<p>Wireless Paper Full's
+<a href="https://github.com/mikecarper/MeshCore/tree/1e4d1e167a984abee34e92288b44d55f3d0e15a6"><code>1e4d1e16</code> update</a>
+has 256 message slots normally and 128 while an mOTA session borrows its
+workspace. Idle WiFi listening leaves all 256 slots available. If more than
+128 unread messages are queued, sync them with an app before starting mOTA.
+Source stop/disconnect restores all 256 slots and frees ESP32 scratch buffers.
+USB, Bluetooth, WiFi, the display and the partition layout are retained.
+The application is 1,869,976 bytes; use its app-only <code>.bin</code> for a compatible
+WiFi update, or its merged image for USB installation.</p>
 <p>The T096 and T1 LoRa OTA repeater corrections allocate the diagnostic manual
 staging buffer only when requested, recovering about 4 KiB at startup.
 Ordinary mOTA uses its existing staging store. <code>ota dev clear</code> releases a manual
@@ -1813,7 +1825,7 @@ stage; allocation failure reports an error before writing. These same-version
 repairs require an explicit exact-target manual LoRa installation or USB;
 forward-only trusted autoinstall does not select an equal-version repair.</p>
 <p>Available RAM below means capacity <strong>before startup allocations</strong>, not free
-heap after boot:</p>
+heap after boot. The Wireless Paper row includes its latest <code>1e4d1e16</code> update:</p>
 <table>
 <thead>
 <tr>
@@ -1833,7 +1845,7 @@ heap after boot:</p>
 <tr>
 <td><code>Heltec_Wireless_Paper_companion_radio_full</code></td>
 <td style="text-align: right;">150,144</td>
-<td style="text-align: right;">187,680</td>
+<td style="text-align: right;">161,336</td>
 <td style="text-align: right;">152,576</td>
 </tr>
 <tr>
@@ -1898,7 +1910,10 @@ and firmware-file hashes. The
 distinguishes original binary/log calculations from new ELF checks.
 All 52 exact firmware builds, their native file pairs, and 150 native mOTA
 tests passed, alongside memory, allocation-failure, shared-queue and picker
-regressions. Physical boot/load/soak validation remains pending.</p>
+regressions. Wireless Paper's follow-up also passed complete TCP mOTA transfers
+with address/leak sanitizers, repeated disconnects, queue-full refusal, idle
+listening and USB/TCP ownership changes. Physical boot/load/soak validation
+remains pending.</p>
 <h2 id="g3-usb-disappearance-with-power-saving-enabled">G3 USB disappearance with power saving enabled</h2>
 <p>The published <code>26303793</code> firmware has an ESP32 native-USB sleep bug that
 matches a Station G3 report: USB disappears from the connected Pi after a
