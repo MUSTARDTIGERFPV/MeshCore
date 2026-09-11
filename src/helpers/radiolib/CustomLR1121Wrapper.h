@@ -1,0 +1,155 @@
+#pragma once
+
+#include "CustomLR1121.h"
+#include "RadioLibWrappers.h"
+#include "LR11x0Reset.h"
+
+#ifndef USE_LR1121
+#define USE_LR1121
+#endif
+
+class CustomLR1121Wrapper : public RadioLibWrapper {
+  using DeepInitCallback = bool (*)();
+  DeepInitCallback _deep_init;
+
+public:
+  CustomLR1121Wrapper(CustomLR1121& radio, mesh::MainBoard& board)
+      : RadioLibWrapper(radio, board), _deep_init(NULL) { }
+
+  void setDeepInitCallback(DeepInitCallback callback) { _deep_init = callback; }
+
+  void powerOff() { _radio->standby(); _radio->sleep(); }
+
+protected:
+  bool applyParams(float freq, float bw, uint8_t sf, uint8_t cr) override {
+    bool success = ((CustomLR1121 *)_radio)->setFrequency(freq) == RADIOLIB_ERR_NONE
+        && ((CustomLR1121 *)_radio)->setSpreadingFactor(sf) == RADIOLIB_ERR_NONE
+        && ((CustomLR1121 *)_radio)->setBandwidth(bw) == RADIOLIB_ERR_NONE
+        && ((CustomLR1121 *)_radio)->setCodingRate(cr) == RADIOLIB_ERR_NONE
+        && updatePreamble(sf, bw);
+    if (!success) return false;
+
+    PacketMillis pm = calcMaxPacketMillis(sf, bw, cr, preambleLengthForParams(sf, bw));
+    ((CustomLR1121 *)_radio)->setPreambleMillis(pm.preambleMillis);
+    ((CustomLR1121 *)_radio)->setMaxPayloadMillis(pm.payloadMillis);
+    return true;
+  }
+
+public:
+  bool setCodingRate(uint8_t cr) override {
+    return ((CustomLR1121 *)_radio)->setCodingRate(cr) == RADIOLIB_ERR_NONE;
+  }
+
+  bool isReceivingPacket() override {
+    return ((CustomLR1121 *)_radio)->isReceiving();
+  }
+  bool isChipBusy() override {
+    return ((CustomLR1121 *)_radio)->isChipBusy();
+  }
+  float getCurrentRSSI() override {
+    float rssi = -110;
+    ((CustomLR1121 *)_radio)->getRssiInst(&rssi);
+    return rssi;
+  }
+
+  uint32_t getEstAirtimeFor(int len_bytes) override {
+    auto airtime = RadioLibWrapper::getEstAirtimeFor(len_bytes);
+    if (airtime == 0) return 0;
+    return airtime < 200 ? 200 : airtime;   // at least 200 millis
+  }
+
+  void onSendFinished() override {
+    RadioLibWrapper::onSendFinished();
+    _radio->setPreambleLength(currentPreambleLength()); // overcomes weird issues with small and big pkts
+  }
+
+  bool supportsRxPowerSaving() const override { return true; }
+  void onReceiveProcessed() override { finishReceiveProcessing(); }
+
+protected:
+  bool isPacketReady() override {
+    // Header errors are recovery events, not packets. Handle them before the
+    // generic duty-cycle readiness check can discard the IRQ or a stale buffer
+    // length can be mistaken for a newly received frame.
+    if (_radio->checkIrq(RADIOLIB_IRQ_HEADER_ERR) > 0) {
+      MESH_DEBUG_PRINTLN("CustomLR1121Wrapper: recovering from header error");
+      int16_t err = ((CustomLR1121 *)_radio)->recoverReceivePath();
+      if (err != RADIOLIB_ERR_NONE) {
+        MESH_DEBUG_PRINTLN("CustomLR1121Wrapper: RX recovery error (%d)", err);
+      }
+      _rx_ps_armed = false;
+      _rx_hold_continuous = false;
+      n_recv_errors++;
+      return false;
+    }
+    return RadioLibWrapper::isPacketReady();
+  }
+
+  int startReceiveMode() override {
+    // Do not abort a frame that started while a calibration transition was
+    // being scheduled. recvRaw() will move it to continuous RX afterward.
+    if (_nf_calib_active && _rx_ps_armed && isPacketPendingOrReceiving()) {
+      return RADIOLIB_ERR_NONE;
+    }
+    if (_rx_ps_armed) {
+      // stop the previous duty-cycle sequence with an explicit standby before
+      // reconfiguring the radio
+      stopReceiveDutyCycle();
+    }
+    if (!_rx_ps_enabled || _nf_calib_active) {
+      // plain continuous RX: powersaving off, or a periodic noise-floor
+      // calibration window is in progress
+      if (!_rx_ps_enabled) _rx_ps_continuous_fallback = false;
+      return _radio->startReceive();
+    }
+
+    if (rxPowerSavingUsesContinuousFallback(_rx_ps_rx_us, _rx_ps_sleep_us)) {
+      _rx_ps_continuous_fallback = true;
+      return _radio->startReceive();
+    }
+
+    _rx_ps_continuous_fallback = false;
+
+    const RadioLibIrqFlags_t irqFlags = RADIOLIB_IRQ_RX_DEFAULT_FLAGS;
+    // route RX timeout (false preamble detect) and error IRQs to the IRQ pin
+    // as well, so the wrapper re-arms RX instead of waiting forever
+    const RadioLibIrqFlags_t irqMask =
+        (1UL << RADIOLIB_IRQ_RX_DONE) |
+        (1UL << RADIOLIB_IRQ_TIMEOUT) |
+        (1UL << RADIOLIB_IRQ_CRC_ERR) |
+        (1UL << RADIOLIB_IRQ_HEADER_ERR);
+
+    int err = ((CustomLR1121 *)_radio)->startReceiveDutyCycle(_rx_ps_rx_us, _rx_ps_sleep_us, irqFlags, irqMask);
+    if (err == RADIOLIB_ERR_NONE) {
+      _rx_ps_armed = true;
+      return err;
+    }
+
+    _rx_ps_continuous_fallback = true;
+    MESH_DEBUG_PRINTLN("CustomLR1121Wrapper: error: startReceiveDutyCycle(%d), falling back to continuous RX", err);
+    return _radio->startReceive();
+  }
+
+  bool radioDeepInit() override {
+    return _deep_init != NULL && prepareRadioHardReset() && _deep_init()
+        && _board->finishRadioHardReset();
+  }
+  bool supportsRadioDeepInit() const override {
+    return _deep_init != NULL && supportsRadioHardResetPath();
+  }
+
+public:
+  uint8_t getSpreadingFactor() const override { return ((CustomLR1121 *)_radio)->getSpreadingFactor(); }
+  
+protected:
+  bool applyRxBoostedGainMode(bool en) override {
+    return ((CustomLR1121 *)_radio)->setRxBoostedGainMode(en) == RADIOLIB_ERR_NONE;
+  }
+public:
+  bool supportsRxBoostedGainMode() const override { return true; }
+  bool getRxBoostedGainMode() const override {
+    return ((CustomLR1121 *)_radio)->getRxBoostedGainMode();
+  }
+
+  void doResetAGC() override { lr11x0ResetAGC((LR11x0 *)_radio, ((CustomLR1121 *)_radio)->getFreqMHz(), getRxBoostedGainMode()); }
+};
