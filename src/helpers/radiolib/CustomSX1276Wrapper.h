@@ -44,6 +44,30 @@ protected:
     return ((CustomSX1276 *)_radio)->tryScanChannel(cadScanTimeoutMillis(), *_board);
   }
 
+  // Power handed to the FSK modem while keying a carrier. A board whose radio
+  // only drives an external amplifier overrides this: giving beginFSK() the
+  // user-facing dBm would push the PA far past the input it expects.
+  virtual int8_t carrierDriveDbm() const { return LORA_TX_POWER; }
+
+  // SX127x cannot emit a carrier from the LoRa modem - RadioLib's
+  // transmitDirect() returns RADIOLIB_ERR_WRONG_MODEM there. So CW means
+  // switching to FSK, and leaving it means rebuilding the LoRa config.
+  int16_t enterCarrierWave() override {
+    CustomSX1276* radio = (CustomSX1276 *)_radio;
+    const float freq = _params_valid ? _cur_freq : (float)LORA_FREQ;
+    const int16_t status = radio->beginFSK(freq, 4.8, 5.0, 125.0,
+                                           carrierDriveDbm(), 16, false);
+    if (status != RADIOLIB_ERR_NONE) return status;
+    return radio->transmitDirect();
+  }
+
+  int16_t exitCarrierWave() override {
+    _radio->standby();
+    // restoreAfterDeepInit() performs the deep init itself; calling it here as
+    // well was a second, redundant hard reset.
+    return restoreAfterDeepInit() ? RADIOLIB_ERR_NONE : RADIOLIB_ERR_UNKNOWN;
+  }
+
   bool radioDeepInit() override {
     if (!prepareRadioHardReset()) return false;
     return ((CustomSX1276 *)_radio)->std_init() && _board->finishRadioHardReset();

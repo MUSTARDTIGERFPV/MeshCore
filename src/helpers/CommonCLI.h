@@ -474,6 +474,10 @@ public:
   virtual void eraseLogFile() = 0;
   virtual void dumpLogFile() = 0;
   virtual bool setTxPower(int8_t power_dbm) = 0;
+  // Hold an unmodulated carrier for output/antenna measurement. Off the air
+  // for everything else while active; not every radio can do it.
+  virtual bool setCarrierWave(bool /*on*/) { return false; }
+  virtual bool isCarrierWaveActive() const { return false; }
   virtual void formatNeighborsReply(char *reply) = 0;
   virtual void removeNeighbor(const uint8_t* pubkey, int key_len) {
     // no op by default

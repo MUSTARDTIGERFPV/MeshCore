@@ -44,6 +44,7 @@ protected:
   bool _rx_ps_armed;      // radio is currently in RX duty-cycle mode
   bool _rx_ps_continuous_fallback; // requested RXPS is receiving continuously for this tuple
   bool _rx_hold_continuous; // keep plain RX active until Dispatcher consumes cached metadata
+  bool _cw_active = false;  // unmodulated carrier held for diagnostics
   uint32_t _rx_ps_rx_us;
   uint32_t _rx_ps_sleep_us;
 
@@ -135,6 +136,13 @@ protected:
     return _radio->setOutputPower(dbm);
   }
   virtual bool applyRxBoostedGainMode(bool) { return false; }
+
+  // Carrier-wave hooks. The default suits a radio whose transmitDirect() can
+  // key a carrier from the mode the mesh already runs in - the LR11x0 family
+  // issues SetTxCw from here and sets its own RF switch. A radio that needs a
+  // different modem for CW overrides both and restores on the way out.
+  virtual int16_t enterCarrierWave() { return _radio->transmitDirect(); }
+  virtual int16_t exitCarrierWave() { return _radio->standby(); }
   // 0 = reconfigure from idle, 1 = resume RX afterwards, 2 = currently busy.
   uint8_t beginReconfigure();
   void endReconfigure(bool resume_rx);
@@ -194,6 +202,16 @@ public:
                  const uint32_t* rx_ps_timings = NULL);
   uint32_t getRngSeed();
   bool setTxPower(int8_t dbm);
+
+  // Hold an unmodulated carrier at the current TX power, for measuring output
+  // or checking an antenna. While it is active the mesh cannot re-arm receive,
+  // so the node is off the air for everything else until it is turned off.
+  //
+  // This keys the PA continuously, which is a duty cycle most amplifiers on
+  // this class of hardware were never specified for. Keep it brief at high
+  // power.
+  bool setCarrierWave(bool on);
+  bool isCarrierWaveActive() const { return _cw_active; }
 
   virtual float getCurrentRSSI() =0;
   virtual uint8_t getSpreadingFactor() const { return LORA_SF; }

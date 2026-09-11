@@ -87,6 +87,22 @@ uint32_t RadioLibWrapper::getRngSeed() {
 }
 
 bool RadioLibWrapper::setTxPower(int8_t dbm) {
+  if (_cw_active) {
+    // Keyed for diagnostics. beginReconfigure() would refuse: the radio is not
+    // in RX, and on SX127x isReceivingPacket() reads LoRa modem-status
+    // registers that mean nothing once the FSK modem is driving the carrier.
+    // Sweeping power against a meter is the whole point of CW, so apply it.
+    const int16_t cw_status = applyCachedTxPower(dbm);
+    if (cw_status == RADIOLIB_ERR_NONE) {
+      _cur_dbm = dbm;
+      _dbm_valid = true;
+      return true;
+    }
+    MESH_DEBUG_PRINTLN("RadioLibWrapper: TX power %d rejected in CW (%d)",
+                       (int)dbm, (int)cw_status);
+    return false;
+  }
+
   const uint8_t resume_rx = beginReconfigure();
   if (resume_rx > 1) return false;
 
@@ -211,7 +227,32 @@ bool RadioLibWrapper::setRxBoostedGainMode(bool enabled) {
   return success;
 }
 
+bool RadioLibWrapper::setCarrierWave(bool on) {
+  if (on == _cw_active) return true;
+
+  if (on) {
+    _radio->standby();
+    _rx_hold_continuous = false;
+    _rx_ps_armed = false;
+    const int16_t status = enterCarrierWave();
+    if (status != RADIOLIB_ERR_NONE) {
+      MESH_DEBUG_PRINTLN("RadioLibWrapper: carrier wave refused (%d)", (int)status);
+      startRecv();              // _cw_active still false, so this re-arms
+      return false;
+    }
+    _cw_active = true;
+    state = STATE_IDLE;         // nothing is being received while keyed
+    return true;
+  }
+
+  _cw_active = false;           // cleared first so the guards below release
+  const int16_t status = exitCarrierWave();
+  startRecv();
+  return status == RADIOLIB_ERR_NONE;
+}
+
 void RadioLibWrapper::idle() {
+  if (_cw_active) return;   // held in carrier wave for diagnostics
   _radio->standby();
   _rx_hold_continuous = false;
   state = STATE_IDLE;   // need another startReceive()
@@ -539,6 +580,7 @@ void RadioLibWrapper::loop() {
 }
 
 void RadioLibWrapper::startRecv() {
+  if (_cw_active) return;   // held in carrier wave for diagnostics
   int err = startReceiveMode();
   if (err == RADIOLIB_ERR_NONE) {
     state = STATE_RX;
