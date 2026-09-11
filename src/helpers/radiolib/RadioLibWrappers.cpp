@@ -228,24 +228,35 @@ bool RadioLibWrapper::setRxBoostedGainMode(bool enabled) {
 }
 
 bool RadioLibWrapper::setCarrierWave(bool on) {
+  if (on && _cw_active) {
+    _cw_deadline = millis() + CW_HOLD_TIMEOUT_MS;   // asked again, keep going
+    return true;
+  }
   if (on == _cw_active) return true;
 
   if (on) {
+    // Light sleep powers down the RTC peripheral domain, and that is where the
+    // ESP32's DACs live. On a board whose amplifier gain is a DAC voltage the
+    // carrier would collapse at the first sleep with nothing in the logs.
+    _board->setInhibitSleep(true);
     _radio->standby();
     _rx_hold_continuous = false;
     _rx_ps_armed = false;
     const int16_t status = enterCarrierWave();
     if (status != RADIOLIB_ERR_NONE) {
       MESH_DEBUG_PRINTLN("RadioLibWrapper: carrier wave refused (%d)", (int)status);
+      _board->setInhibitSleep(false);
       startRecv();              // _cw_active still false, so this re-arms
       return false;
     }
     _cw_active = true;
+    _cw_deadline = millis() + CW_HOLD_TIMEOUT_MS;
     state = STATE_IDLE;         // nothing is being received while keyed
     return true;
   }
 
   _cw_active = false;           // cleared first so the guards below release
+  _board->setInhibitSleep(false);
   const int16_t status = exitCarrierWave();
   startRecv();
   return status == RADIOLIB_ERR_NONE;
@@ -489,6 +500,13 @@ void RadioLibWrapper::endNoiseFloorCalib(unsigned long now) {
 }
 
 void RadioLibWrapper::loop() {
+  if (_cw_active) {
+    if ((long)(millis() - _cw_deadline) >= 0) {
+      MESH_DEBUG_PRINTLN("RadioLibWrapper: carrier wave timed out, dropping");
+      setCarrierWave(false);
+    }
+    return;                     // nothing else here applies while keyed
+  }
   if (_rx_ps_enabled && !_rx_ps_continuous_fallback) {
     rxPsWatchdogCheck();
   }

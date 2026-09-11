@@ -478,6 +478,7 @@ public:
   // for everything else while active; not every radio can do it.
   virtual bool setCarrierWave(bool /*on*/) { return false; }
   virtual bool isCarrierWaveActive() const { return false; }
+  virtual uint32_t carrierWaveHoldSecs() const { return 0; }
   virtual void formatNeighborsReply(char *reply) = 0;
   virtual void removeNeighbor(const uint8_t* pubkey, int key_len) {
     // no op by default

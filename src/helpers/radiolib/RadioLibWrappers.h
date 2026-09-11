@@ -13,6 +13,14 @@
 #define RX_PS_FALLBACK_RX_US    65625UL
 #define RX_PS_FALLBACK_SLEEP_US 60000UL
 
+// A held carrier keys the PA continuously, which is a duty cycle most
+// amplifiers on this class of hardware were never specified for. It drops
+// itself unless something asks again, so a forgotten 'cw on' cannot sit
+// there cooking a board.
+#ifndef CW_HOLD_TIMEOUT_MS
+#define CW_HOLD_TIMEOUT_MS 10000UL
+#endif
+
 #ifdef USE_CC310_HW_CRYPTO
 #include "../NRF52Crypto.h"
 #endif
@@ -45,6 +53,7 @@ protected:
   bool _rx_ps_continuous_fallback; // requested RXPS is receiving continuously for this tuple
   bool _rx_hold_continuous; // keep plain RX active until Dispatcher consumes cached metadata
   bool _cw_active = false;  // unmodulated carrier held for diagnostics
+  unsigned long _cw_deadline = 0;  // millis() at which it drops itself
   uint32_t _rx_ps_rx_us;
   uint32_t _rx_ps_sleep_us;
 
@@ -212,6 +221,8 @@ public:
   // power.
   bool setCarrierWave(bool on);
   bool isCarrierWaveActive() const { return _cw_active; }
+  // How long a carrier holds before it drops itself, for the CLI to quote.
+  uint32_t carrierWaveHoldSecs() const { return CW_HOLD_TIMEOUT_MS / 1000; }
 
   virtual float getCurrentRSSI() =0;
   virtual uint8_t getSpreadingFactor() const { return LORA_SF; }

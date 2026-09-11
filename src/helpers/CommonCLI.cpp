@@ -2485,7 +2485,8 @@ void CommonCLI::handleCommand(uint32_t sender_timestamp, char* command, char* re
       while (*arg == ' ') arg++;
       if (memcmp(arg, "on", 2) == 0) {
         if (_callbacks->setCarrierWave(true)) {
-          strcpy(reply, "OK - carrier ON, node is off the mesh until 'cw off'");
+          sprintf(reply, "OK - carrier ON, node off the mesh, drops after %us unless repeated",
+                  (unsigned)_callbacks->carrierWaveHoldSecs());
         } else {
           strcpy(reply, "Err - carrier wave not supported by this radio");
         }
