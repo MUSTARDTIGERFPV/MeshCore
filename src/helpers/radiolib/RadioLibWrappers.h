@@ -220,7 +220,7 @@ public:
   // this class of hardware were never specified for. Keep it brief at high
   // power.
   bool setCarrierWave(bool on);
-  bool isCarrierWaveActive() const { return _cw_active; }
+  bool isCarrierWaveActive() const override { return _cw_active; }
   // How long a carrier holds before it drops itself, for the CLI to quote.
   uint32_t carrierWaveHoldSecs() const { return CW_HOLD_TIMEOUT_MS / 1000; }
 

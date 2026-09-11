@@ -52,10 +52,18 @@ protected:
   // SX127x cannot emit a carrier from the LoRa modem - RadioLib's
   // transmitDirect() returns RADIOLIB_ERR_WRONG_MODEM there. So CW means
   // switching to FSK, and leaving it means rebuilding the LoRa config.
+  //
+  // The frequency deviation must be zero. transmitDirect() with no argument
+  // calls directMode(), which maps DIO2 to the modulator's DATA input and puts
+  // the chip in continuous mode, so the transmitted frequency follows whatever
+  // level sits on that pin. Most boards do not wire DIO2 anywhere, which leaves
+  // it floating and picking up noise: with the stock 5 kHz deviation the result
+  // is not a carrier at all but a tone hopping randomly across a 10 kHz span.
+  // At zero deviation the data input cannot move the carrier, wired or not.
   int16_t enterCarrierWave() override {
     CustomSX1276* radio = (CustomSX1276 *)_radio;
     const float freq = _params_valid ? _cur_freq : (float)LORA_FREQ;
-    const int16_t status = radio->beginFSK(freq, 4.8, 5.0, 125.0,
+    const int16_t status = radio->beginFSK(freq, 4.8, 0.0, 125.0,
                                            carrierDriveDbm(), 16, false);
     if (status != RADIOLIB_ERR_NONE) return status;
     return radio->transmitDirect();
