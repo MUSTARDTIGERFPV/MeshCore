@@ -5060,6 +5060,25 @@ bool MyMesh::setTxPower(int8_t power_dbm) {
   return radio_driver.setTxPower(power_dbm);
 }
 
+bool MyMesh::setCarrierWave(bool on) {
+#if defined(ESP32_PLATFORM)
+  // Light sleep powers down the RTC peripheral domain, and that is where the
+  // ESP32's DACs live. On a board whose amplifier gain is a DAC voltage, the
+  // output collapses at the first sleep with nothing in the logs to say so.
+  // Stay awake for the duration of the carrier.
+  if (on) board.setInhibitSleep(true);
+#endif
+  const bool ok = radio_driver.setCarrierWave(on);
+#if defined(ESP32_PLATFORM)
+  if (!on || !ok) board.setInhibitSleep(false);
+#endif
+  return ok;
+}
+
+bool MyMesh::isCarrierWaveActive() const {
+  return radio_driver.isCarrierWaveActive();
+}
+
 bool MyMesh::setRxPowerSaving(bool enable, uint32_t rx_us, uint32_t sleep_us) {
   bool ok = radio_driver.setRxPowerSaving(enable, rx_us, sleep_us);
   MESH_DEBUG_PRINTLN("RX Power Saving: %s (%lu/%lu us)%s",

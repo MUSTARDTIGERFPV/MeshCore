@@ -138,6 +138,12 @@ public:
   }
 
 protected:
+  // Keying a carrier must not change what the radio feeds the amplifier. The
+  // DAC still sets the output level, so the radio stays at its drive level -
+  // handing the FSK modem the user-facing dBm would overdrive the PA by the
+  // whole difference between the two.
+  int8_t carrierDriveDbm() const override { return _drive_dbm; }
+
   // Emit a gain-control code. Override for a PA driven by PWM or an external
   // DAC instead of the MCU's own.
   virtual void writeGainControl(uint8_t code) {
